@@ -1,0 +1,916 @@
+local Players = game:GetService("Players")
+local Lighting = game:GetService("Lighting")
+local RunService = game:GetService("RunService")
+local Workspace = game:GetService("Workspace")
+local UserInputService = game:GetService("UserInputService")
+local player = Players.LocalPlayer
+local playerGui = player:WaitForChild("PlayerGui")
+local camera = Workspace.CurrentCamera
+
+-- ============================================
+-- HÀM TIỆN ÍCH: KÉO THẢ (DRAG)
+-- ============================================
+local function makeDraggable(guiObject, dragHandle)
+	dragHandle = dragHandle or guiObject
+	local dragging = false
+	local dragStart, startPos
+
+	dragHandle.InputBegan:Connect(function(input)
+		if input.UserInputType == Enum.UserInputType.MouseButton1
+			or input.UserInputType == Enum.UserInputType.Touch then
+			dragging = true
+			dragStart = input.Position
+			startPos = guiObject.Position
+			input.Changed:Connect(function()
+				if input.UserInputState == Enum.UserInputState.End then
+					dragging = false
+				end
+			end)
+		end
+	end)
+
+	dragHandle.InputChanged:Connect(function(input)
+		if dragging and (input.UserInputType == Enum.UserInputType.MouseMovement
+			or input.UserInputType == Enum.UserInputType.Touch) then
+			local delta = input.Position - dragStart
+			guiObject.Position = UDim2.new(
+				startPos.X.Scale, startPos.X.Offset + delta.X,
+				startPos.Y.Scale, startPos.Y.Offset + delta.Y
+			)
+		end
+	end)
+end
+
+-- ============================================
+-- SCREENGUI + FRAME CHÍNH
+-- ============================================
+local screenGui = Instance.new("ScreenGui")
+screenGui.Name = "Hyko"
+screenGui.ResetOnSpawn = false
+screenGui.Parent = playerGui
+
+local frame = Instance.new("Frame")
+frame.Name = "HykoFrame"
+frame.Size = UDim2.new(0, 400, 0, 400)
+frame.Position = UDim2.new(0.5, -200, 0.5, -200)
+frame.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+frame.BorderSizePixel = 0
+frame.ClipsDescendants = true
+frame.Parent = screenGui
+
+local corner = Instance.new("UICorner")
+corner.CornerRadius = UDim.new(0, 12)
+corner.Parent = frame
+
+-- THANH TIÊU ĐỀ
+local titleBar = Instance.new("Frame")
+titleBar.Name = "TitleBar"
+titleBar.Size = UDim2.new(1, 0, 0, 32)
+titleBar.BackgroundColor3 = Color3.fromRGB(15, 15, 15)
+titleBar.BorderSizePixel = 0
+titleBar.ZIndex = 5
+titleBar.Parent = frame
+
+local titleCorner = Instance.new("UICorner")
+titleCorner.CornerRadius = UDim.new(0, 12)
+titleCorner.Parent = titleBar
+
+local titleFix = Instance.new("Frame")
+titleFix.Size = UDim2.new(1, 0, 0, 12)
+titleFix.Position = UDim2.new(0, 0, 1, -12)
+titleFix.BackgroundColor3 = Color3.fromRGB(15, 15, 15)
+titleFix.BorderSizePixel = 0
+titleFix.ZIndex = 5
+titleFix.Parent = titleBar
+
+local titleLabel = Instance.new("TextLabel")
+titleLabel.Size = UDim2.new(0, 60, 1, 0)
+titleLabel.Position = UDim2.new(0, 10, 0, 0)
+titleLabel.BackgroundTransparency = 1
+titleLabel.Text = "Hyko"
+titleLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+titleLabel.Font = Enum.Font.GothamBold
+titleLabel.TextSize = 16
+titleLabel.TextXAlignment = Enum.TextXAlignment.Left
+titleLabel.ZIndex = 6
+titleLabel.Parent = titleBar
+
+local versionLabel = Instance.new("TextLabel")
+versionLabel.Size = UDim2.new(0, 40, 1, 0)
+versionLabel.Position = UDim2.new(0, 55, 0, 0)
+versionLabel.BackgroundTransparency = 1
+versionLabel.Text = "v3.1"
+versionLabel.TextColor3 = Color3.fromRGB(150, 150, 150)
+versionLabel.Font = Enum.Font.Gotham
+versionLabel.TextSize = 12
+versionLabel.TextXAlignment = Enum.TextXAlignment.Left
+versionLabel.ZIndex = 6
+versionLabel.Parent = titleBar
+
+local minimizeBtn = Instance.new("TextButton")
+minimizeBtn.Size = UDim2.new(0, 26, 0, 26)
+minimizeBtn.Position = UDim2.new(1, -32, 0, 3)
+minimizeBtn.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
+minimizeBtn.Text = "-"
+minimizeBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+minimizeBtn.Font = Enum.Font.GothamBold
+minimizeBtn.TextSize = 18
+minimizeBtn.ZIndex = 6
+minimizeBtn.Parent = titleBar
+
+local minimizeBtnCorner = Instance.new("UICorner")
+minimizeBtnCorner.CornerRadius = UDim.new(0, 8)
+minimizeBtnCorner.Parent = minimizeBtn
+
+makeDraggable(frame, titleBar)
+
+-- NỀN ANIME
+local imageLabel = Instance.new("ImageLabel")
+imageLabel.Size = UDim2.new(1, 0, 1, -32)
+imageLabel.Position = UDim2.new(0, 0, 0, 32)
+imageLabel.BackgroundTransparency = 0
+imageLabel.Image = "rbxthumb://type=Asset&id=6421296794&w=420&h=420"
+imageLabel.ScaleType = Enum.ScaleType.Crop
+imageLabel.ZIndex = 1
+imageLabel.Parent = frame
+
+local imageCorner = Instance.new("UICorner")
+imageCorner.CornerRadius = UDim.new(0, 12)
+imageCorner.Parent = imageLabel
+
+-- Overlay tối để text dễ đọc
+local overlay = Instance.new("Frame")
+overlay.Size = UDim2.new(1, 0, 1, -32)
+overlay.Position = UDim2.new(0, 0, 0, 32)
+overlay.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+overlay.BackgroundTransparency = 0.6
+overlay.BorderSizePixel = 0
+overlay.ZIndex = 2
+overlay.Parent = frame
+
+-- ============================================
+-- SCROLLING FRAME CHO CONTENT
+-- ============================================
+local scrollFrame = Instance.new("ScrollingFrame")
+scrollFrame.Size = UDim2.new(1, 0, 1, -32)
+scrollFrame.Position = UDim2.new(0, 0, 0, 32)
+scrollFrame.BackgroundTransparency = 1
+scrollFrame.BorderSizePixel = 0
+scrollFrame.ScrollBarThickness = 4
+scrollFrame.ScrollBarImageColor3 = Color3.fromRGB(255, 255, 255)
+scrollFrame.ScrollBarImageTransparency = 0.5
+scrollFrame.CanvasSize = UDim2.new(0, 0, 0, 700)
+scrollFrame.ZIndex = 3
+scrollFrame.Parent = frame
+
+local contentArea = Instance.new("Frame")
+contentArea.Size = UDim2.new(1, 0, 0, 700)
+contentArea.BackgroundTransparency = 1
+contentArea.BorderSizePixel = 0
+contentArea.Parent = scrollFrame
+
+-- ============================================
+-- HÀM TẠO MODULE
+-- ============================================
+local function createModule(title, description, buttonText, yPosition)
+	local module = Instance.new("Frame")
+	module.Size = UDim2.new(1, -20, 0, 110)
+	module.Position = UDim2.new(0, 10, 0, yPosition)
+	module.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+	module.BackgroundTransparency = 0.2
+	module.BorderSizePixel = 0
+	module.Parent = contentArea
+
+	local moduleCorner = Instance.new("UICorner")
+	moduleCorner.CornerRadius = UDim.new(0, 10)
+	moduleCorner.Parent = module
+
+	local moduleStroke = Instance.new("UIStroke")
+	moduleStroke.Color = Color3.fromRGB(255, 255, 255)
+	moduleStroke.Transparency = 0.7
+	moduleStroke.Thickness = 1
+	moduleStroke.Parent = module
+
+	local titleLabel = Instance.new("TextLabel")
+	titleLabel.Size = UDim2.new(1, -20, 0, 25)
+	titleLabel.Position = UDim2.new(0, 10, 0, 8)
+	titleLabel.BackgroundTransparency = 1
+	titleLabel.Text = title
+	titleLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+	titleLabel.Font = Enum.Font.GothamBold
+	titleLabel.TextSize = 16
+	titleLabel.TextXAlignment = Enum.TextXAlignment.Left
+	titleLabel.Parent = module
+
+	local divider = Instance.new("Frame")
+	divider.Size = UDim2.new(1, -20, 0, 1)
+	divider.Position = UDim2.new(0, 10, 0, 35)
+	divider.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+	divider.BackgroundTransparency = 0.5
+	divider.BorderSizePixel = 0
+	divider.Parent = module
+
+	local descLabel = Instance.new("TextLabel")
+	descLabel.Size = UDim2.new(1, -20, 0, 20)
+	descLabel.Position = UDim2.new(0, 10, 0, 40)
+	descLabel.BackgroundTransparency = 1
+	descLabel.Text = description
+	descLabel.TextColor3 = Color3.fromRGB(180, 180, 180)
+	descLabel.Font = Enum.Font.Gotham
+	descLabel.TextSize = 11
+	descLabel.TextXAlignment = Enum.TextXAlignment.Left
+	descLabel.Parent = module
+
+	local button = Instance.new("TextButton")
+	button.Size = UDim2.new(1, -20, 0, 35)
+	button.Position = UDim2.new(0, 10, 0, 65)
+	button.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+	button.BackgroundTransparency = 0.75
+	button.Text = buttonText
+	button.TextColor3 = Color3.fromRGB(255, 255, 255)
+	button.Font = Enum.Font.GothamBold
+	button.TextSize = 13
+	button.ZIndex = 3
+	button.ClipsDescendants = true
+	button.Parent = module
+
+	local buttonCorner = Instance.new("UICorner")
+	buttonCorner.CornerRadius = UDim.new(0, 8)
+	buttonCorner.Parent = button
+
+	local buttonStroke = Instance.new("UIStroke")
+	buttonStroke.Color = Color3.fromRGB(255, 255, 255)
+	buttonStroke.Transparency = 0.5
+	buttonStroke.Thickness = 1.5
+	buttonStroke.Parent = button
+
+	return module, button
+end
+
+-- Tạo các module
+local fpsModule, fpsBtn = createModule("FPS BOOST", "Boosts your FPS for better performance", "ENABLE FPS BOOST", 10)
+local counterModule, fpsCounterToggleBtn = createModule("FPS COUNTER", "Shows your current FPS on screen", "FPS COUNTER: OFF", 130)
+local textureModule, textureBtn = createModule("LOW TEXTURE", "Makes textures ugly for more FPS", "LOW TEXTURE: OFF", 250)
+local aimbotModule, aimbotBtn = createModule("AIMBOT", "Auto aims at nearest player (Right Click)", "AIMBOT: OFF", 370)
+local espModule, espBtn = createModule("ESP BOX", "Shows boxes around players", "ESP: OFF", 490)
+
+-- ============================================
+-- Ô VUÔNG "H" THU NHỎ, VIỀN CHROMA
+-- ============================================
+local minimizedIcon = Instance.new("Frame")
+minimizedIcon.Size = UDim2.new(0, 50, 0, 50)
+minimizedIcon.Position = frame.Position
+minimizedIcon.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+minimizedIcon.BorderSizePixel = 0
+minimizedIcon.Visible = false
+minimizedIcon.Parent = screenGui
+
+local minimizedIconCorner = Instance.new("UICorner")
+minimizedIconCorner.CornerRadius = UDim.new(0, 12)
+minimizedIconCorner.Parent = minimizedIcon
+
+local minimizedIconStroke = Instance.new("UIStroke")
+minimizedIconStroke.Thickness = 3
+minimizedIconStroke.Parent = minimizedIcon
+
+local rainbowSequence = ColorSequence.new({
+	ColorSequenceKeypoint.new(0.00, Color3.fromRGB(255, 0, 0)),
+	ColorSequenceKeypoint.new(0.16, Color3.fromRGB(255, 255, 0)),
+	ColorSequenceKeypoint.new(0.33, Color3.fromRGB(0, 255, 0)),
+	ColorSequenceKeypoint.new(0.50, Color3.fromRGB(0, 255, 255)),
+	ColorSequenceKeypoint.new(0.66, Color3.fromRGB(0, 0, 255)),
+	ColorSequenceKeypoint.new(0.83, Color3.fromRGB(255, 0, 255)),
+	ColorSequenceKeypoint.new(1.00, Color3.fromRGB(255, 0, 0)),
+})
+
+local strokeGradient = Instance.new("UIGradient")
+strokeGradient.Color = rainbowSequence
+strokeGradient.Parent = minimizedIconStroke
+
+local hLabel = Instance.new("TextButton")
+hLabel.Size = UDim2.new(1, 0, 1, 0)
+hLabel.BackgroundTransparency = 1
+hLabel.Text = "H"
+hLabel.Font = Enum.Font.GothamBlack
+hLabel.TextSize = 26
+hLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+hLabel.AutoButtonColor = false
+hLabel.Parent = minimizedIcon
+
+local hGradient = Instance.new("UIGradient")
+hGradient.Color = rainbowSequence
+hGradient.Parent = hLabel
+
+makeDraggable(minimizedIcon)
+
+local rainbowConn
+local function startRainbow()
+	if rainbowConn then return end
+	rainbowConn = RunService.Heartbeat:Connect(function()
+		local t = tick()
+		hGradient.Rotation = (t * 90) % 360
+		strokeGradient.Rotation = (t * 120) % 360
+	end)
+end
+local function stopRainbow()
+	if rainbowConn then
+		rainbowConn:Disconnect()
+		rainbowConn = nil
+	end
+end
+
+local isMinimized = false
+local function setMinimized(state)
+	isMinimized = state
+	frame.Visible = not state
+	minimizedIcon.Visible = state
+	if state then startRainbow() else stopRainbow() end
+end
+
+minimizeBtn.MouseButton1Click:Connect(function() setMinimized(true) end)
+hLabel.MouseButton1Click:Connect(function() setMinimized(false) end)
+
+-- ============================================
+-- FPS COUNTER HIỂN THỊ
+-- ============================================
+local fpsCounterFrame = Instance.new("Frame")
+fpsCounterFrame.Size = UDim2.new(0, 120, 0, 45)
+fpsCounterFrame.Position = UDim2.new(0, 8, 0, 8)
+fpsCounterFrame.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+fpsCounterFrame.BackgroundTransparency = 0.35
+fpsCounterFrame.BorderSizePixel = 0
+fpsCounterFrame.Visible = false
+fpsCounterFrame.Parent = screenGui
+
+local fpsCounterCorner = Instance.new("UICorner")
+fpsCounterCorner.CornerRadius = UDim.new(0, 8)
+fpsCounterCorner.Parent = fpsCounterFrame
+
+local fpsTitleLabel = Instance.new("TextLabel")
+fpsTitleLabel.Size = UDim2.new(1, 0, 0, 15)
+fpsTitleLabel.Position = UDim2.new(0, 0, 0, 3)
+fpsTitleLabel.BackgroundTransparency = 1
+fpsTitleLabel.Text = "FPS COUNTER"
+fpsTitleLabel.TextColor3 = Color3.fromRGB(200, 200, 200)
+fpsTitleLabel.Font = Enum.Font.GothamBold
+fpsTitleLabel.TextSize = 10
+fpsTitleLabel.Parent = fpsCounterFrame
+
+local fpsDividerLine = Instance.new("Frame")
+fpsDividerLine.Size = UDim2.new(1, -10, 0, 1)
+fpsDividerLine.Position = UDim2.new(0, 5, 0, 18)
+fpsDividerLine.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+fpsDividerLine.BackgroundTransparency = 0.5
+fpsDividerLine.BorderSizePixel = 0
+fpsDividerLine.Parent = fpsCounterFrame
+
+local fpsLabel = Instance.new("TextLabel")
+fpsLabel.Size = UDim2.new(1, 0, 0, 22)
+fpsLabel.Position = UDim2.new(0, 0, 0, 20)
+fpsLabel.BackgroundTransparency = 1
+fpsLabel.TextColor3 = Color3.fromRGB(0, 255, 140)
+fpsLabel.Font = Enum.Font.GothamBold
+fpsLabel.TextSize = 14
+fpsLabel.Text = "FPS: --"
+fpsLabel.Parent = fpsCounterFrame
+
+makeDraggable(fpsCounterFrame)
+
+local function getFpsColor(fps)
+	if fps >= 50 then return Color3.fromRGB(0, 255, 140)
+	elseif fps >= 30 then return Color3.fromRGB(255, 210, 0)
+	else return Color3.fromRGB(255, 60, 60) end
+end
+
+local fpsCounterOn = false
+fpsCounterToggleBtn.MouseButton1Click:Connect(function()
+	fpsCounterOn = not fpsCounterOn
+	fpsCounterFrame.Visible = fpsCounterOn
+	fpsCounterToggleBtn.Text = fpsCounterOn and "FPS COUNTER: ON" or "FPS COUNTER: OFF"
+end)
+
+do
+	local frameCount = 0
+	local lastUpdate = tick()
+	RunService.Heartbeat:Connect(function()
+		frameCount += 1
+		local now = tick()
+		if now - lastUpdate >= 1 then
+			if fpsCounterOn then
+				fpsLabel.Text = "FPS: " .. frameCount
+				fpsLabel.TextColor3 = getFpsColor(frameCount)
+			end
+			frameCount = 0
+			lastUpdate = now
+		end
+	end)
+end
+
+-- ============================================
+-- FPS BOOST LOGIC
+-- ============================================
+local CULL_DISTANCE = 450
+local CULL_INTERVAL = 0.4
+
+local trackedParts = {}
+local cullRunning = false
+local savedStreamingEnabled = Workspace.StreamingEnabled
+
+local function isExcluded(obj)
+	local charFolder = obj:FindFirstAncestorOfClass("Model")
+	if charFolder and Players:GetPlayerFromCharacter(charFolder) then
+		return true
+	end
+	return false
+end
+
+local function collectParts()
+	trackedParts = {}
+	for _, obj in ipairs(Workspace:GetDescendants()) do
+		if obj:IsA("BasePart") and not isExcluded(obj) then
+			table.insert(trackedParts, obj)
+		end
+	end
+end
+
+local addedConn, removedConn, cullLoopThread
+
+local savedMaterials = {}
+local materialFlattenOn = false
+local lowTextureMode = false
+
+local function startDistanceCulling()
+	if cullRunning then return end
+	cullRunning = true
+	collectParts()
+
+	addedConn = Workspace.DescendantAdded:Connect(function(obj)
+		if cullRunning and obj:IsA("BasePart") and not isExcluded(obj) then
+			table.insert(trackedParts, obj)
+			if materialFlattenOn and obj.Material ~= Enum.Material.SmoothPlastic then
+				savedMaterials[obj] = obj.Material
+				obj.Material = Enum.Material.SmoothPlastic
+			end
+			if lowTextureMode then
+				obj.Color = Color3.fromRGB(180, 180, 180)
+			end
+		end
+	end)
+	removedConn = Workspace.DescendantRemoving:Connect(function(obj)
+		if obj:IsA("BasePart") then
+			for i = #trackedParts, 1, -1 do
+				if trackedParts[i] == obj then
+					table.remove(trackedParts, i)
+					break
+				end
+			end
+		end
+	end)
+
+	cullLoopThread = task.spawn(function()
+		while cullRunning do
+			local camPos = camera.CFrame.Position
+			for i = 1, #trackedParts do
+				local part = trackedParts[i]
+				if part and part.Parent then
+					local dist = (part.Position - camPos).Magnitude
+					if dist > CULL_DISTANCE then
+						part.LocalTransparencyModifier = 1
+					else
+						part.LocalTransparencyModifier = 0
+					end
+				end
+			end
+			task.wait(CULL_INTERVAL)
+		end
+	end)
+end
+
+local function stopDistanceCulling()
+	cullRunning = false
+	if addedConn then addedConn:Disconnect(); addedConn = nil end
+	if removedConn then removedConn:Disconnect(); removedConn = nil end
+	for _, part in ipairs(trackedParts) do
+		if part and part.Parent then
+			part.LocalTransparencyModifier = 0
+		end
+	end
+	trackedParts = {}
+end
+
+local function flattenMaterials(instance)
+	for _, obj in ipairs(instance:GetDescendants()) do
+		if obj:IsA("BasePart") and obj.Material ~= Enum.Material.SmoothPlastic then
+			savedMaterials[obj] = obj.Material
+			obj.Material = Enum.Material.SmoothPlastic
+		end
+	end
+end
+
+local function restoreMaterials()
+	for part, mat in pairs(savedMaterials) do
+		if part and part.Parent then
+			part.Material = mat
+		end
+	end
+	savedMaterials = {}
+end
+
+local function applyLowTexture(instance)
+	for _, obj in ipairs(instance:GetDescendants()) do
+		if obj:IsA("BasePart") then
+			obj.Color = Color3.fromRGB(180, 180, 180)
+			obj.Material = Enum.Material.SmoothPlastic
+		end
+	end
+end
+
+local function restoreTexture()
+	for part, mat in pairs(savedMaterials) do
+		if part and part.Parent then
+			part.Material = mat
+		end
+	end
+	savedMaterials = {}
+end
+
+local boosted = false
+local savedSky = nil
+local savedTechnology = Lighting.Technology
+
+local function fpsBoost()
+	for _, effect in ipairs(Lighting:GetChildren()) do
+		if effect:IsA("BlurEffect") or effect:IsA("DepthOfFieldEffect") or effect:IsA("BloomEffect")
+			or effect:IsA("SunRaysEffect") or effect:IsA("ColorCorrectionEffect")
+			or effect:IsA("Atmosphere") or effect.ClassName == "Clouds" then
+			effect:Destroy()
+		end
+	end
+
+	local sky = Lighting:FindFirstChildOfClass("Sky")
+	if sky then
+		savedSky = sky:Clone()
+		sky:Destroy()
+	end
+
+	Lighting.Technology = Enum.Technology.Compatibility
+	Lighting.GlobalShadows = false
+
+	local terrain = Workspace:FindFirstChildOfClass("Terrain")
+	if terrain then
+		terrain.Decoration = false
+		terrain.WaterWaveSize = 0
+		terrain.WaterWaveSpeed = 0
+		terrain.WaterReflectance = 0
+	end
+
+	local function nukeHeavyEffects(instance)
+		for _, obj in ipairs(instance:GetDescendants()) do
+			if obj:IsA("ParticleEmitter") or obj:IsA("Smoke") or obj:IsA("Fire") or obj:IsA("Sparkles")
+				or obj:IsA("Trail") or obj:IsA("Beam") or obj:IsA("Decal") or obj:IsA("Texture")
+				or obj:IsA("Highlight") or obj:IsA("SelectionBox") or obj:IsA("SurfaceAppearance") then
+				obj:Destroy()
+			elseif obj:IsA("BasePart") then
+				obj.CastShadow = false
+			end
+		end
+	end
+	nukeHeavyEffects(Workspace)
+
+	pcall(function()
+		Workspace.StreamingEnabled = true
+		Workspace.StreamingMinRadius = 128
+		Workspace.StreamingTargetRadius = 256
+	end)
+
+	startDistanceCulling()
+
+	materialFlattenOn = true
+	flattenMaterials(Workspace)
+
+	pcall(function() settings().Rendering.QualityLevel = Enum.QualityLevel.Level01 end)
+	pcall(function() settings().Rendering.MeshPartHeadsAndAccessories = false end)
+
+	collectgarbage("collect")
+	task.spawn(function()
+		while boosted do
+			task.wait(30)
+			collectgarbage("collect")
+		end
+	end)
+
+	boosted = true
+	fpsBtn.Text = "DISABLE FPS BOOST ✓"
+end
+
+local function fpsUnboost()
+	if savedSky then
+		savedSky.Parent = Lighting
+		savedSky = nil
+	end
+	Lighting.Technology = savedTechnology
+	Lighting.GlobalShadows = true
+
+	local terrain = Workspace:FindFirstChildOfClass("Terrain")
+	if terrain then terrain.Decoration = true end
+
+	pcall(function() Workspace.StreamingEnabled = savedStreamingEnabled end)
+
+	stopDistanceCulling()
+
+	materialFlattenOn = false
+	restoreMaterials()
+
+	if lowTextureMode then
+		restoreTexture()
+		lowTextureMode = false
+		textureBtn.Text = "LOW TEXTURE: OFF"
+	end
+
+	boosted = false
+	fpsBtn.Text = "ENABLE FPS BOOST"
+end
+
+fpsBtn.MouseButton1Click:Connect(function()
+	if boosted then fpsUnboost() else fpsBoost() end
+end)
+
+textureBtn.MouseButton1Click:Connect(function()
+	lowTextureMode = not lowTextureMode
+	if lowTextureMode then
+		applyLowTexture(Workspace)
+		textureBtn.Text = "LOW TEXTURE: ON"
+	else
+		restoreTexture()
+		textureBtn.Text = "LOW TEXTURE: OFF"
+	end
+end)
+
+Lighting.DescendantAdded:Connect(function(effect)
+	if not boosted then return end
+	if effect:IsA("BlurEffect") or effect:IsA("DepthOfFieldEffect") or effect:IsA("BloomEffect")
+		or effect:IsA("SunRaysEffect") or effect:IsA("ColorCorrectionEffect")
+		or effect:IsA("Atmosphere") or effect.ClassName == "Clouds" then
+		effect:Destroy()
+	end
+end)
+
+-- ============================================
+-- AIMBOT MỚI (CÓ FOV RING)
+-- ============================================
+local teamCheck = false
+local fov = 150
+local smoothing = 0.3
+local aimbotEnabled = false
+local aimbotLoop = nil
+
+-- FOV Ring
+local FOVring = Drawing.new("Circle")
+FOVring.Visible = false
+FOVring.Thickness = 1.5
+FOVring.Radius = fov
+FOVring.Transparency = 1
+FOVring.Color = Color3.fromRGB(255, 128, 128)
+FOVring.Position = camera.ViewportSize/2
+
+local function getClosest(cframe)
+	local ray = Ray.new(cframe.Position, cframe.LookVector).Unit
+	
+	local target = nil
+	local mag = math.huge
+	
+	for i,v in pairs(Players:GetPlayers()) do
+		if v.Character and v.Character:FindFirstChild("Head") and v.Character:FindFirstChild("Humanoid") and v.Character:FindFirstChild("HumanoidRootPart") and v ~= player and (v.Team ~= player.Team or (not teamCheck)) then
+			local magBuf = (v.Character.Head.Position - ray:ClosestPoint(v.Character.Head.Position)).Magnitude
+			
+			if magBuf < mag then
+				mag = magBuf
+				target = v
+			end
+		end
+	end
+	
+	return target
+end
+
+local function startAimbot()
+	if aimbotLoop then return end
+	FOVring.Visible = true
+	
+	aimbotLoop = RunService.RenderStepped:Connect(function()
+		local pressed = UserInputService:IsMouseButtonPressed(Enum.UserInputType.MouseButton2)
+		local localPlay = player.Character
+		local cam = camera
+		local zz = camera.ViewportSize/2
+		
+		FOVring.Position = camera.ViewportSize/2
+		
+		if pressed and localPlay then
+			local curTar = getClosest(cam.CFrame)
+			if curTar and curTar.Character and curTar.Character:FindFirstChild("Head") then
+				local ssHeadPoint = cam:WorldToScreenPoint(curTar.Character.Head.Position)
+				ssHeadPoint = Vector2.new(ssHeadPoint.X, ssHeadPoint.Y)
+				if (ssHeadPoint - zz).Magnitude < fov then
+					camera.CFrame = camera.CFrame:Lerp(CFrame.new(cam.CFrame.Position, curTar.Character.Head.Position), smoothing)
+				end
+			end
+		end
+	end)
+end
+
+local function stopAimbot()
+	if aimbotLoop then
+		aimbotLoop:Disconnect()
+		aimbotLoop = nil
+	end
+	FOVring.Visible = false
+end
+
+aimbotBtn.MouseButton1Click:Connect(function()
+	aimbotEnabled = not aimbotEnabled
+	if aimbotEnabled then
+		startAimbot()
+		aimbotBtn.Text = "AIMBOT: ON"
+	else
+		stopAimbot()
+		aimbotBtn.Text = "AIMBOT: OFF"
+	end
+end)
+
+-- ============================================
+-- ESP BOX (CÓ BO GÓC)
+-- ============================================
+local espEnabled = false
+local espBoxes = {}
+local espConnection = nil
+local cornerLength = 10 -- Độ dài của góc bo
+
+local function createESPBox(targetPlayer)
+	local boxData = {
+		-- 4 đường line cho box
+		topLine = Drawing.new("Line"),
+		bottomLine = Drawing.new("Line"),
+		leftLine = Drawing.new("Line"),
+		rightLine = Drawing.new("Line"),
+		-- 4 góc bo
+		topLeftCorner = Drawing.new("Line"),
+		topRightCorner = Drawing.new("Line"),
+		bottomLeftCorner = Drawing.new("Line"),
+		bottomRightCorner = Drawing.new("Line"),
+	}
+	
+	-- Cấu hình các line
+	for _, line in pairs(boxData) do
+		line.Thickness = 2
+		line.Color = Color3.fromRGB(255, 0, 0)
+		line.Transparency = 1
+		line.Visible = false
+	end
+	
+	espBoxes[targetPlayer] = boxData
+	return boxData
+end
+
+local function updateESPBox(targetPlayer, boxData)
+	local targetChar = targetPlayer.Character
+	if targetChar and targetPlayer ~= player then
+		local targetHumanoid = targetChar:FindFirstChildOfClass("Humanoid")
+		local targetRoot = targetChar:FindFirstChild("HumanoidRootPart")
+		if targetHumanoid and targetRoot and targetHumanoid.Health > 0 then
+			local head = targetChar:FindFirstChild("Head")
+			if head then
+				local headPos = camera:WorldToViewportPoint(head.Position)
+				local rootPos = camera:WorldToViewportPoint(targetRoot.Position)
+				
+				if headPos.Z > 0 and rootPos.Z > 0 then
+					local height = (headPos.Y - rootPos.Y) * 2
+					local width = height * 0.6
+					
+					local x = rootPos.X
+					local y = rootPos.Y
+					local top = y - height/2
+					local bottom = y + height/2
+					local left = x - width/2
+					local right = x + width/2
+					
+					-- Vẽ box với các góc bo
+					-- Top line (bỏ phần góc)
+					boxData.topLine.From = Vector2.new(left + cornerLength, top)
+					boxData.topLine.To = Vector2.new(right - cornerLength, top)
+					boxData.topLine.Visible = true
+					
+					-- Bottom line (bỏ phần góc)
+					boxData.bottomLine.From = Vector2.new(left + cornerLength, bottom)
+					boxData.bottomLine.To = Vector2.new(right - cornerLength, bottom)
+					boxData.bottomLine.Visible = true
+					
+					-- Left line (bỏ phần góc)
+					boxData.leftLine.From = Vector2.new(left, top + cornerLength)
+					boxData.leftLine.To = Vector2.new(left, bottom - cornerLength)
+					boxData.leftLine.Visible = true
+					
+					-- Right line (bỏ phần góc)
+					boxData.rightLine.From = Vector2.new(right, top + cornerLength)
+					boxData.rightLine.To = Vector2.new(right, bottom - cornerLength)
+					boxData.rightLine.Visible = true
+					
+					-- Top-left corner
+					boxData.topLeftCorner.From = Vector2.new(left, top + cornerLength)
+					boxData.topLeftCorner.To = Vector2.new(left + cornerLength, top)
+					boxData.topLeftCorner.Visible = true
+					
+					-- Top-right corner
+					boxData.topRightCorner.From = Vector2.new(right - cornerLength, top)
+					boxData.topRightCorner.To = Vector2.new(right, top + cornerLength)
+					boxData.topRightCorner.Visible = true
+					
+					-- Bottom-left corner
+					boxData.bottomLeftCorner.From = Vector2.new(left, bottom - cornerLength)
+					boxData.bottomLeftCorner.To = Vector2.new(left + cornerLength, bottom)
+					boxData.bottomLeftCorner.Visible = true
+					
+					-- Bottom-right corner
+					boxData.bottomRightCorner.From = Vector2.new(right - cornerLength, bottom)
+					boxData.bottomRightCorner.To = Vector2.new(right, bottom - cornerLength)
+					boxData.bottomRightCorner.Visible = true
+				else
+					-- Ẩn tất cả nếu ngoài màn hình
+					for _, line in pairs(boxData) do
+						line.Visible = false
+					end
+				end
+			end
+		else
+			-- Ẩn nếu player chết hoặc không có character
+			for _, line in pairs(boxData) do
+				line.Visible = false
+			end
+		end
+	else
+		-- Ẩn nếu là player hiện tại
+		for _, line in pairs(boxData) do
+			line.Visible = false
+		end
+	end
+end
+
+local function startESP()
+	if espConnection then return end
+	
+	-- Tạo box cho tất cả player hiện tại
+	for _, targetPlayer in ipairs(Players:GetPlayers()) do
+		if targetPlayer ~= player and not espBoxes[targetPlayer] then
+			createESPBox(targetPlayer)
+		end
+	end
+	
+	-- Theo dõi player mới
+	Players.PlayerAdded:Connect(function(targetPlayer)
+		task.wait(1)
+		if espEnabled and targetPlayer ~= player and not espBoxes[targetPlayer] then
+			createESPBox(targetPlayer)
+		end
+	end)
+	
+	Players.PlayerRemoving:Connect(function(targetPlayer)
+		if espBoxes[targetPlayer] then
+			for _, line in pairs(espBoxes[targetPlayer]) do
+				line:Remove()
+			end
+			espBoxes[targetPlayer] = nil
+		end
+	end)
+	
+	espConnection = RunService.RenderStepped:Connect(function()
+		if espEnabled then
+			for targetPlayer, boxData in pairs(espBoxes) do
+				updateESPBox(targetPlayer, boxData)
+			end
+		end
+	end)
+end
+
+local function stopESP()
+	if espConnection then
+		espConnection:Disconnect()
+		espConnection = nil
+	end
+	
+	-- Ẩn tất cả box
+	for targetPlayer, boxData in pairs(espBoxes) do
+		for _, line in pairs(boxData) do
+			line.Visible = false
+		end
+	end
+end
+
+espBtn.MouseButton1Click:Connect(function()
+	espEnabled = not espEnabled
+	if espEnabled then
+		startESP()
+		espBtn.Text = "ESP: ON"
+	else
+		stopESP()
+		espBtn.Text = "ESP: OFF"
+	end
+end)
