@@ -1,6 +1,6 @@
 repeat task.wait() until game:IsLoaded()
 
-print("Hyko v1.3.3 - Fast Rejoin Loop (No Background)")
+print("Hyko v1.3.4 - Auto Farm & Lobby Loop (No Background)")
 
 -- // Configuration
 getgenv().Game_config = {
@@ -9,7 +9,7 @@ getgenv().Game_config = {
     Only_drop_bond = false
 }
 getgenv().Lobby_config = {
-    Players_number = 1,
+    Players_number = 1, -- Auto tạo room 1 người
     Auto_create_party = true,
     Auto_recreate_party = true
 }
@@ -23,7 +23,7 @@ end
 local Prefix = getgenv().Game_config
 local LobbyPrefix = getgenv().Lobby_config
 
--- // ============== MAIN GAME ==============
+-- // ============== MAIN GAME (IN-GAME) ==============
 if game.PlaceId == 70876832253163 then
     task.wait()
     local Config = {
@@ -73,7 +73,7 @@ if game.PlaceId == 70876832253163 then
     local MainCorner = Instance.new("UICorner", MainFrame)
     MainCorner.CornerRadius = UDim.new(0, 14)
 
-    -- Rainbow Glow Stroke
+    -- Rainbow Glow Border
     local NeonStroke = Instance.new("UIStroke", MainFrame)
     NeonStroke.Thickness = 2
     NeonStroke.Color = Color3.fromRGB(0, 255, 200)
@@ -111,7 +111,7 @@ if game.PlaceId == 70876832253163 then
     TitleLabel.Size = UDim2.new(1, -45, 1, 0)
     TitleLabel.Position = UDim2.new(0, 40, 0, 0)
     TitleLabel.BackgroundTransparency = 1
-    TitleLabel.Text = "HYKO // AUTO FARM v1.3.3"
+    TitleLabel.Text = "HYKO // AUTO FARM v1.3.4"
     TitleLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
     TitleLabel.TextSize = 13
     TitleLabel.Font = Enum.Font.GothamBold
@@ -212,7 +212,7 @@ if game.PlaceId == 70876832253163 then
         CurrentBondLabel.Text = "INVENTORY : " .. tostring(CurrentBond.Text)
     end)
 
-    -- // ============== FARM & AUTO REJOIN LOGIC ==============
+    -- // ============== FARM LOGIC & TELEPORT LOBBY ==============
     task.wait(3.2)
     task.spawn(function()
         local char = world:get_resource(comps.ClientStateResource).localCharacter
@@ -239,20 +239,20 @@ if game.PlaceId == 70876832253163 then
                 end
             end
 
-            -- Lấy xong Bone -> Rejoin ngay trực tiếp vào lại Game Place ID
-            StatusLabel.Text = "SYSTEM : Rejoining Game..."
+            -- Sau khi lượm xong Bone -> Reset & Teleport quay về Lobby
+            StatusLabel.Text = "SYSTEM : Returning to Lobby..."
             task.wait(0.3)
             if Config.Auto_reset == true and LP.Character and LP.Character:FindFirstChild("Humanoid") then
                 LP.Character.Humanoid.Health = 0
             end
             
             if Config.Auto_teleport == true then
-                TeleportService:Teleport(70876832253163, LP) -- Trực tiếp Teleport lại Game
+                TeleportService:Teleport(116495829188952, LP) -- Trở về Lobby Place ID để bắt đầu tạo phòng mới
             end
         end
     end)
 
--- // ============== LOBBY ==============
+-- // ============== LOBBY (TẠO SOLO PARTY) ==============
 elseif game.PlaceId == 116495829188952 then
     task.wait(1.8)
     local Config = {
@@ -341,7 +341,7 @@ elseif game.PlaceId == 116495829188952 then
     TitleLabel.Size = UDim2.new(1, -45, 1, 0)
     TitleLabel.Position = UDim2.new(0, 40, 0, 0)
     TitleLabel.BackgroundTransparency = 1
-    TitleLabel.Text = "HYKO // AUTO PARTY v1.3.3"
+    TitleLabel.Text = "HYKO // AUTO PARTY v1.3.4"
     TitleLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
     TitleLabel.TextSize = 13
     TitleLabel.Font = Enum.Font.GothamBold
@@ -408,7 +408,7 @@ elseif game.PlaceId == 116495829188952 then
                         Remotes.CreateParty:FireServer(PartyCreationState.partySettings())
                         partyCreated = true
                         stuckCheckStart = 0
-                        StatusLabel.Text = "PARTY STATUS :\nSolo Party Created! Teleporting..."
+                        StatusLabel.Text = "PARTY STATUS :\nSolo Party Created! Entering game..."
                     end
                 end
             end)
@@ -513,7 +513,7 @@ elseif game.PlaceId == 116495829188952 then
                         Remotes.CreateParty:FireServer(PartyCreationState.partySettings())
                         partyCreated = true
                         stuckCheckStart = 0
-                        StatusLabel.Text = "PARTY STATUS :\nSolo Party Created! Teleporting..."
+                        StatusLabel.Text = "PARTY STATUS :\nSolo Party Created! Entering game..."
                     end
                 end
 
