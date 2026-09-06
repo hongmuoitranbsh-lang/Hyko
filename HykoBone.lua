@@ -1,6 +1,6 @@
 repeat task.wait() until game:IsLoaded()
 
-print("Hyko v1.3 - Dead Rails Auto Bond [Roblox Image Background]")
+print("Hyko v1.3.2 - Dead Rails Auto Bond Solo Loop")
 
 -- // Configuration
 getgenv().Game_config = {
@@ -9,7 +9,7 @@ getgenv().Game_config = {
     Only_drop_bond = false
 }
 getgenv().Lobby_config = {
-    Players_number = 4,
+    Players_number = 1, -- Đã chỉnh thành 1 người
     Auto_create_party = true,
     Auto_recreate_party = true
 }
@@ -60,42 +60,38 @@ if game.PlaceId == 70876832253163 then
     ScreenGui.DisplayOrder = 999999
     ScreenGui.Parent = CoreGui
 
-    -- Main Container Frame
     local MainFrame = Instance.new("Frame", ScreenGui)
     MainFrame.Name = "MainFrame"
     MainFrame.Size = UDim2.new(0, 0, 0, 0)
     MainFrame.Position = UDim2.new(0.5, 0, 0.5, 0)
-    MainFrame.BackgroundColor3 = Color3.fromRGB(10, 10, 15)
-    MainFrame.BackgroundTransparency = 1
+    MainFrame.BackgroundColor3 = Color3.fromRGB(15, 15, 22)
     MainFrame.BorderSizePixel = 0
     MainFrame.Active = true
     MainFrame.Draggable = true
     MainFrame.ClipsDescendants = true
 
     local MainCorner = Instance.new("UICorner", MainFrame)
-    MainCorner.CornerRadius = UDim.new(0, 12)
+    MainCorner.CornerRadius = UDim.new(0, 14)
 
-    -- Background Image (ID: 101902016188836)
     local BackgroundImage = Instance.new("ImageLabel", MainFrame)
     BackgroundImage.Name = "BackgroundImage"
     BackgroundImage.Size = UDim2.new(1, 0, 1, 0)
     BackgroundImage.Position = UDim2.new(0, 0, 0, 0)
     BackgroundImage.BackgroundTransparency = 1
-    BackgroundImage.Image = "rbxassetid://101902016188836"
+    BackgroundImage.Image = "rbxassetid://12543586055"
     BackgroundImage.ScaleType = Enum.ScaleType.Crop
-    BackgroundImage.ZIndex = 0
+    BackgroundImage.ZIndex = 1
 
     local BGCorner = Instance.new("UICorner", BackgroundImage)
-    BGCorner.CornerRadius = UDim.new(0, 12)
+    BGCorner.CornerRadius = UDim.new(0, 14)
 
-    -- Dark Overlay for readable UI
     local DarkOverlay = Instance.new("Frame", BackgroundImage)
     DarkOverlay.Size = UDim2.new(1, 0, 1, 0)
     DarkOverlay.BackgroundColor3 = Color3.fromRGB(10, 10, 15)
-    DarkOverlay.BackgroundTransparency = 0.35
+    DarkOverlay.BackgroundTransparency = 0.4
     DarkOverlay.BorderSizePixel = 0
+    DarkOverlay.ZIndex = 1
 
-    -- Rainbow Glow Stroke
     local NeonStroke = Instance.new("UIStroke", MainFrame)
     NeonStroke.Thickness = 2
     NeonStroke.Color = Color3.fromRGB(0, 255, 200)
@@ -113,16 +109,15 @@ if game.PlaceId == 70876832253163 then
         end
     end)
 
-    -- Header Panel
     local Header = Instance.new("Frame", MainFrame)
     Header.Size = UDim2.new(1, 0, 0, 40)
     Header.BackgroundColor3 = Color3.fromRGB(20, 20, 30)
-    Header.BackgroundTransparency = 0.3
+    Header.BackgroundTransparency = 0.35
     Header.BorderSizePixel = 0
     Header.ZIndex = 2
 
     local HeaderCorner = Instance.new("UICorner", Header)
-    HeaderCorner.CornerRadius = UDim.new(0, 12)
+    HeaderCorner.CornerRadius = UDim.new(0, 14)
 
     local HeaderIcon = Instance.new("ImageLabel", Header)
     HeaderIcon.Size = UDim2.new(0, 20, 0, 20)
@@ -130,16 +125,18 @@ if game.PlaceId == 70876832253163 then
     HeaderIcon.BackgroundTransparency = 1
     HeaderIcon.Image = "rbxassetid://6031280882"
     HeaderIcon.ImageColor3 = Color3.fromRGB(0, 230, 255)
+    HeaderIcon.ZIndex = 3
 
     local TitleLabel = Instance.new("TextLabel", Header)
     TitleLabel.Size = UDim2.new(1, -45, 1, 0)
     TitleLabel.Position = UDim2.new(0, 40, 0, 0)
     TitleLabel.BackgroundTransparency = 1
-    TitleLabel.Text = "HYKO // AUTO FARM v1.3"
+    TitleLabel.Text = "HYKO // AUTO FARM v1.3.2"
     TitleLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
     TitleLabel.TextSize = 13
     TitleLabel.Font = Enum.Font.GothamBold
     TitleLabel.TextXAlignment = Enum.TextXAlignment.Left
+    TitleLabel.ZIndex = 3
 
     local Line = Instance.new("Frame", MainFrame)
     Line.Size = UDim2.new(1, -24, 0, 1)
@@ -149,20 +146,19 @@ if game.PlaceId == 70876832253163 then
     Line.BorderSizePixel = 0
     Line.ZIndex = 2
 
-    -- Cards Container
     local ContentContainer = Instance.new("Frame", MainFrame)
     ContentContainer.Size = UDim2.new(1, -24, 0, 150)
     ContentContainer.Position = UDim2.new(0, 12, 0, 48)
     ContentContainer.BackgroundTransparency = 1
     ContentContainer.ZIndex = 2
 
-    -- Card 1: Collected (Bone Icon)
     local Card1 = Instance.new("Frame", ContentContainer)
     Card1.Size = UDim2.new(1, 0, 0, 42)
     Card1.Position = UDim2.new(0, 0, 0, 0)
     Card1.BackgroundColor3 = Color3.fromRGB(20, 20, 30)
-    Card1.BackgroundTransparency = 0.4
+    Card1.BackgroundTransparency = 0.45
     Card1.BorderSizePixel = 0
+    Card1.ZIndex = 2
     Instance.new("UICorner", Card1).CornerRadius = UDim.new(0, 8)
 
     local Icon1 = Instance.new("ImageLabel", Card1)
@@ -171,6 +167,7 @@ if game.PlaceId == 70876832253163 then
     Icon1.BackgroundTransparency = 1
     Icon1.Image = "rbxassetid://6034684937"
     Icon1.ImageColor3 = Color3.fromRGB(0, 255, 170)
+    Icon1.ZIndex = 3
 
     local BondLabel = Instance.new("TextLabel", Card1)
     BondLabel.Size = UDim2.new(1, -40, 1, 0)
@@ -181,14 +178,15 @@ if game.PlaceId == 70876832253163 then
     BondLabel.TextSize = 12
     BondLabel.Font = Enum.Font.GothamBold
     BondLabel.TextXAlignment = Enum.TextXAlignment.Left
+    BondLabel.ZIndex = 3
 
-    -- Card 2: Inventory (Sack Icon)
     local Card2 = Instance.new("Frame", ContentContainer)
     Card2.Size = UDim2.new(1, 0, 0, 42)
     Card2.Position = UDim2.new(0, 0, 0, 48)
     Card2.BackgroundColor3 = Color3.fromRGB(20, 20, 30)
-    Card2.BackgroundTransparency = 0.4
+    Card2.BackgroundTransparency = 0.45
     Card2.BorderSizePixel = 0
+    Card2.ZIndex = 2
     Instance.new("UICorner", Card2).CornerRadius = UDim.new(0, 8)
 
     local Icon2 = Instance.new("ImageLabel", Card2)
@@ -197,6 +195,7 @@ if game.PlaceId == 70876832253163 then
     Icon2.BackgroundTransparency = 1
     Icon2.Image = "rbxassetid://6031265976"
     Icon2.ImageColor3 = Color3.fromRGB(0, 180, 255)
+    Icon2.ZIndex = 3
 
     local CurrentBondLabel = Instance.new("TextLabel", Card2)
     CurrentBondLabel.Size = UDim2.new(1, -40, 1, 0)
@@ -207,14 +206,15 @@ if game.PlaceId == 70876832253163 then
     CurrentBondLabel.TextSize = 12
     CurrentBondLabel.Font = Enum.Font.GothamBold
     CurrentBondLabel.TextXAlignment = Enum.TextXAlignment.Left
+    CurrentBondLabel.ZIndex = 3
 
-    -- Card 3: Status
     local Card3 = Instance.new("Frame", ContentContainer)
     Card3.Size = UDim2.new(1, 0, 0, 42)
     Card3.Position = UDim2.new(0, 0, 0, 96)
     Card3.BackgroundColor3 = Color3.fromRGB(20, 20, 30)
-    Card3.BackgroundTransparency = 0.4
+    Card3.BackgroundTransparency = 0.45
     Card3.BorderSizePixel = 0
+    Card3.ZIndex = 2
     Instance.new("UICorner", Card3).CornerRadius = UDim.new(0, 8)
 
     local Icon3 = Instance.new("ImageLabel", Card3)
@@ -223,6 +223,7 @@ if game.PlaceId == 70876832253163 then
     Icon3.BackgroundTransparency = 1
     Icon3.Image = "rbxassetid://6031097225"
     Icon3.ImageColor3 = Color3.fromRGB(255, 180, 0)
+    Icon3.ZIndex = 3
 
     local StatusLabel = Instance.new("TextLabel", Card3)
     StatusLabel.Size = UDim2.new(1, -40, 1, 0)
@@ -233,15 +234,13 @@ if game.PlaceId == 70876832253163 then
     StatusLabel.TextSize = 12
     StatusLabel.Font = Enum.Font.GothamMedium
     StatusLabel.TextXAlignment = Enum.TextXAlignment.Left
+    StatusLabel.ZIndex = 3
 
-    -- // ============== APPEARANCE ANIMATION ==============
     TweenService:Create(MainFrame, TweenInfo.new(0.6, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {
         Size = UDim2.new(0, 360, 0, 210),
-        Position = UDim2.new(0.5, -180, 0.5, -105),
-        BackgroundTransparency = 0.05
+        Position = UDim2.new(0.5, -180, 0.5, -105)
     }):Play()
 
-    -- Dynamic Inventory Counter Listener
     local CurrentBond = LP:WaitForChild("PlayerGui"):WaitForChild("BondGui"):WaitForChild("BondInfo"):WaitForChild("BondCount")
     CurrentBondLabel.Text = "INVENTORY : " .. tostring(CurrentBond.Text)
     CurrentBond:GetPropertyChangedSignal("Text"):Connect(function()
@@ -257,6 +256,7 @@ if game.PlaceId == 70876832253163 then
                 world:add(char, comps.Sack)
                 world:set(char, comps.Sack, { contents = {}, maxContents = 10 })
             end
+            
             for id = 1, 100000 do
                 if world:has(id, comps.Storable) and world:get(id, comps.ObjectId) == "bond" then
                     local sr = replicator:get_server_entity(id)
@@ -272,14 +272,16 @@ if game.PlaceId == 70876832253163 then
                         task.wait(0.20)
                     end
                 end
-                if id > 99999 then
-                    if Config.Auto_reset == true then
-                        LP.Character:WaitForChild("Humanoid").Health = 0
-                    end
-                    if Config.Auto_teleport == true then
-                        TeleportService:Teleport(116495829188952, LP)
-                    end
-                end
+            end
+
+            -- Hoàn thành lượm Bone -> Chuyển về Lobby ngay
+            StatusLabel.Text = "SYSTEM : Teleporting to Lobby..."
+            task.wait(0.5)
+            if Config.Auto_reset == true and LP.Character and LP.Character:FindFirstChild("Humanoid") then
+                LP.Character.Humanoid.Health = 0
+            end
+            if Config.Auto_teleport == true then
+                TeleportService:Teleport(116495829188952, LP)
             end
         end
     end)
@@ -328,34 +330,33 @@ elseif game.PlaceId == 116495829188952 then
     MainFrame.Name = "MainFrame"
     MainFrame.Size = UDim2.new(0, 0, 0, 0)
     MainFrame.Position = UDim2.new(0.5, 0, 0.5, 0)
-    MainFrame.BackgroundColor3 = Color3.fromRGB(10, 10, 15)
-    MainFrame.BackgroundTransparency = 1
+    MainFrame.BackgroundColor3 = Color3.fromRGB(15, 15, 22)
     MainFrame.BorderSizePixel = 0
     MainFrame.Active = true
     MainFrame.Draggable = true
     MainFrame.ClipsDescendants = true
 
     local MainCorner = Instance.new("UICorner", MainFrame)
-    MainCorner.CornerRadius = UDim.new(0, 12)
+    MainCorner.CornerRadius = UDim.new(0, 14)
 
-    -- Background Image (ID: 101902016188836)
     local BackgroundImage = Instance.new("ImageLabel", MainFrame)
     BackgroundImage.Name = "BackgroundImage"
     BackgroundImage.Size = UDim2.new(1, 0, 1, 0)
     BackgroundImage.Position = UDim2.new(0, 0, 0, 0)
     BackgroundImage.BackgroundTransparency = 1
-    BackgroundImage.Image = "rbxassetid://101902016188836"
+    BackgroundImage.Image = "rbxassetid://12543586055"
     BackgroundImage.ScaleType = Enum.ScaleType.Crop
-    BackgroundImage.ZIndex = 0
+    BackgroundImage.ZIndex = 1
 
     local BGCorner = Instance.new("UICorner", BackgroundImage)
-    BGCorner.CornerRadius = UDim.new(0, 12)
+    BGCorner.CornerRadius = UDim.new(0, 14)
 
     local DarkOverlay = Instance.new("Frame", BackgroundImage)
     DarkOverlay.Size = UDim2.new(1, 0, 1, 0)
     DarkOverlay.BackgroundColor3 = Color3.fromRGB(10, 10, 15)
-    DarkOverlay.BackgroundTransparency = 0.35
+    DarkOverlay.BackgroundTransparency = 0.4
     DarkOverlay.BorderSizePixel = 0
+    DarkOverlay.ZIndex = 1
 
     local NeonStroke = Instance.new("UIStroke", MainFrame)
     NeonStroke.Thickness = 2
@@ -377,12 +378,12 @@ elseif game.PlaceId == 116495829188952 then
     local Header = Instance.new("Frame", MainFrame)
     Header.Size = UDim2.new(1, 0, 0, 40)
     Header.BackgroundColor3 = Color3.fromRGB(20, 20, 30)
-    Header.BackgroundTransparency = 0.3
+    Header.BackgroundTransparency = 0.35
     Header.BorderSizePixel = 0
     Header.ZIndex = 2
 
     local HeaderCorner = Instance.new("UICorner", Header)
-    HeaderCorner.CornerRadius = UDim.new(0, 12)
+    HeaderCorner.CornerRadius = UDim.new(0, 14)
 
     local HeaderIcon = Instance.new("ImageLabel", Header)
     HeaderIcon.Size = UDim2.new(0, 20, 0, 20)
@@ -390,16 +391,18 @@ elseif game.PlaceId == 116495829188952 then
     HeaderIcon.BackgroundTransparency = 1
     HeaderIcon.Image = "rbxassetid://6034287594"
     HeaderIcon.ImageColor3 = Color3.fromRGB(0, 230, 255)
+    HeaderIcon.ZIndex = 3
 
     local TitleLabel = Instance.new("TextLabel", Header)
     TitleLabel.Size = UDim2.new(1, -45, 1, 0)
     TitleLabel.Position = UDim2.new(0, 40, 0, 0)
     TitleLabel.BackgroundTransparency = 1
-    TitleLabel.Text = "HYKO // AUTO PARTY v1.3"
+    TitleLabel.Text = "HYKO // AUTO PARTY v1.3.2"
     TitleLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
     TitleLabel.TextSize = 13
     TitleLabel.Font = Enum.Font.GothamBold
     TitleLabel.TextXAlignment = Enum.TextXAlignment.Left
+    TitleLabel.ZIndex = 3
 
     local Line = Instance.new("Frame", MainFrame)
     Line.Size = UDim2.new(1, -24, 0, 1)
@@ -413,7 +416,7 @@ elseif game.PlaceId == 116495829188952 then
     Card.Size = UDim2.new(1, -24, 0, 90)
     Card.Position = UDim2.new(0, 12, 0, 52)
     Card.BackgroundColor3 = Color3.fromRGB(20, 20, 30)
-    Card.BackgroundTransparency = 0.4
+    Card.BackgroundTransparency = 0.45
     Card.BorderSizePixel = 0
     Card.ZIndex = 2
     Instance.new("UICorner", Card).CornerRadius = UDim.new(0, 8)
@@ -424,24 +427,24 @@ elseif game.PlaceId == 116495829188952 then
     LobbyIcon.BackgroundTransparency = 1
     LobbyIcon.Image = "rbxassetid://6031097225"
     LobbyIcon.ImageColor3 = Color3.fromRGB(0, 230, 255)
+    LobbyIcon.ZIndex = 3
 
     local StatusLabel = Instance.new("TextLabel", Card)
     StatusLabel.Size = UDim2.new(1, -45, 1, 0)
     StatusLabel.Position = UDim2.new(0, 40, 0, 0)
     StatusLabel.BackgroundTransparency = 1
-    StatusLabel.Text = "PARTY STATUS :\nInitializing matchmaking..."
+    StatusLabel.Text = "PARTY STATUS :\nCreating Solo Party (1 Player)..."
     StatusLabel.TextColor3 = Color3.fromRGB(0, 230, 255)
     StatusLabel.TextSize = 12
     StatusLabel.Font = Enum.Font.GothamMedium
     StatusLabel.TextXAlignment = Enum.TextXAlignment.Left
     StatusLabel.TextYAlignment = Enum.TextYAlignment.Center
     StatusLabel.TextWrapped = true
+    StatusLabel.ZIndex = 3
 
-    -- Appearence Animation
     TweenService:Create(MainFrame, TweenInfo.new(0.6, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {
         Size = UDim2.new(0, 360, 0, 160),
-        Position = UDim2.new(0.5, -180, 0.5, -80),
-        BackgroundTransparency = 0.05
+        Position = UDim2.new(0.5, -180, 0.5, -80)
     }):Play()
 
     -- // Party Logic
@@ -467,7 +470,7 @@ elseif game.PlaceId == 116495829188952 then
                         Remotes.CreateParty:FireServer(PartyCreationState.partySettings())
                         partyCreated = true
                         stuckCheckStart = 0
-                        StatusLabel.Text = "PARTY STATUS :\nParty created (Max: " .. Config.Players_number .. " players)"
+                        StatusLabel.Text = "PARTY STATUS :\nSolo Party Created! Teleporting..."
                     end
                 end
             end)
@@ -572,7 +575,7 @@ elseif game.PlaceId == 116495829188952 then
                         Remotes.CreateParty:FireServer(PartyCreationState.partySettings())
                         partyCreated = true
                         stuckCheckStart = 0
-                        StatusLabel.Text = "PARTY STATUS :\nParty created (Max: " .. Config.Players_number .. " players)"
+                        StatusLabel.Text = "PARTY STATUS :\nSolo Party Created! Teleporting..."
                     end
                 end
 
