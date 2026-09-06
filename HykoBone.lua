@@ -1,6 +1,6 @@
 repeat task.wait() until game:IsLoaded()
 
-print("Hyko v1.1 - Dead Rails Auto Bond [Fixed UI]")
+print("Hyko v1.2 - Dead Rails Auto Bond [Animated & Icons]")
 
 -- // Configuration
 getgenv().Game_config = {
@@ -16,7 +16,6 @@ getgenv().Lobby_config = {
 
 local ScriptURL = "https://raw.githubusercontent.com/hongmuoitranbsh-lang/Hyko/refs/heads/main/HykoBone.lua"
 
--- // Auto reload script on teleport
 if queue_on_teleport then
     queue_on_teleport("loadstring(game:HttpGet('" .. ScriptURL .. "'))()")
 end
@@ -36,6 +35,7 @@ if game.PlaceId == 70876832253163 then
     local Player = game:GetService("Players")
     local RS = game:GetService("ReplicatedStorage")
     local TeleportService = game:GetService("TeleportService")
+    local TweenService = game:GetService("TweenService")
     local LP = Player.LocalPlayer
 
     local world = require(RS:WaitForChild("Shared"):WaitForChild("Universe"):WaitForChild("ECS"):WaitForChild("world"))
@@ -46,7 +46,7 @@ if game.PlaceId == 70876832253163 then
 
     local CollectedBond = 0
 
-    -- // ============== UI ENGINE (FIXED DISPLAY) ==============
+    -- // ============== UI ENGINE ==============
     local CoreGui = (gethui and gethui() or game:GetService("CoreGui"))
 
     if CoreGui:FindFirstChild("HykoUI") then
@@ -63,13 +63,14 @@ if game.PlaceId == 70876832253163 then
     -- Main Container Frame
     local MainFrame = Instance.new("Frame", ScreenGui)
     MainFrame.Name = "MainFrame"
-    MainFrame.Size = UDim2.new(0, 360, 0, 210)
-    MainFrame.Position = UDim2.new(0.5, -180, 0.5, -105)
+    MainFrame.Size = UDim2.new(0, 0, 0, 0) -- Ban đầu thu nhỏ để tạo Animation
+    MainFrame.Position = UDim2.new(0.5, 0, 0.5, 0)
     MainFrame.BackgroundColor3 = Color3.fromRGB(15, 15, 22)
-    MainFrame.BackgroundTransparency = 0.05
+    MainFrame.BackgroundTransparency = 1
     MainFrame.BorderSizePixel = 0
     MainFrame.Active = true
     MainFrame.Draggable = true
+    MainFrame.ClipsDescendants = true
 
     local MainCorner = Instance.new("UICorner", MainFrame)
     MainCorner.CornerRadius = UDim.new(0, 12)
@@ -113,7 +114,7 @@ if game.PlaceId == 70876832253163 then
     TitleLabel.Size = UDim2.new(1, -45, 1, 0)
     TitleLabel.Position = UDim2.new(0, 40, 0, 0)
     TitleLabel.BackgroundTransparency = 1
-    TitleLabel.Text = "HYKO // AUTO FARM v1.1"
+    TitleLabel.Text = "HYKO // AUTO FARM v1.2"
     TitleLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
     TitleLabel.TextSize = 13
     TitleLabel.Font = Enum.Font.GothamBold
@@ -132,7 +133,7 @@ if game.PlaceId == 70876832253163 then
     ContentContainer.Position = UDim2.new(0, 12, 0, 48)
     ContentContainer.BackgroundTransparency = 1
 
-    -- Card 1: Collected
+    -- Card 1: Collected (Bone Icon)
     local Card1 = Instance.new("Frame", ContentContainer)
     Card1.Size = UDim2.new(1, 0, 0, 42)
     Card1.Position = UDim2.new(0, 0, 0, 0)
@@ -142,15 +143,15 @@ if game.PlaceId == 70876832253163 then
     Instance.new("UICorner", Card1).CornerRadius = UDim.new(0, 8)
 
     local Icon1 = Instance.new("ImageLabel", Card1)
-    Icon1.Size = UDim2.new(0, 18, 0, 18)
-    Icon1.Position = UDim2.new(0, 12, 0.5, -9)
+    Icon1.Size = UDim2.new(0, 20, 0, 20)
+    Icon1.Position = UDim2.new(0, 12, 0.5, -10)
     Icon1.BackgroundTransparency = 1
-    Icon1.Image = "rbxassetid://6034043463"
+    Icon1.Image = "rbxassetid://6034684937" -- Bone / Skeleton Icon
     Icon1.ImageColor3 = Color3.fromRGB(0, 255, 170)
 
     local BondLabel = Instance.new("TextLabel", Card1)
     BondLabel.Size = UDim2.new(1, -40, 1, 0)
-    BondLabel.Position = UDim2.new(0, 38, 0, 0)
+    BondLabel.Position = UDim2.new(0, 40, 0, 0)
     BondLabel.BackgroundTransparency = 1
     BondLabel.Text = "COLLECTED : 0"
     BondLabel.TextColor3 = Color3.fromRGB(0, 255, 170)
@@ -158,7 +159,7 @@ if game.PlaceId == 70876832253163 then
     BondLabel.Font = Enum.Font.GothamBold
     BondLabel.TextXAlignment = Enum.TextXAlignment.Left
 
-    -- Card 2: Inventory
+    -- Card 2: Inventory (Sack Icon)
     local Card2 = Instance.new("Frame", ContentContainer)
     Card2.Size = UDim2.new(1, 0, 0, 42)
     Card2.Position = UDim2.new(0, 0, 0, 48)
@@ -168,15 +169,15 @@ if game.PlaceId == 70876832253163 then
     Instance.new("UICorner", Card2).CornerRadius = UDim.new(0, 8)
 
     local Icon2 = Instance.new("ImageLabel", Card2)
-    Icon2.Size = UDim2.new(0, 18, 0, 18)
-    Icon2.Position = UDim2.new(0, 12, 0.5, -9)
+    Icon2.Size = UDim2.new(0, 20, 0, 20)
+    Icon2.Position = UDim2.new(0, 12, 0.5, -10)
     Icon2.BackgroundTransparency = 1
-    Icon2.Image = "rbxassetid://6034451733"
+    Icon2.Image = "rbxassetid://6031265976" -- Sack / Bag Icon
     Icon2.ImageColor3 = Color3.fromRGB(0, 180, 255)
 
     local CurrentBondLabel = Instance.new("TextLabel", Card2)
     CurrentBondLabel.Size = UDim2.new(1, -40, 1, 0)
-    CurrentBondLabel.Position = UDim2.new(0, 38, 0, 0)
+    CurrentBondLabel.Position = UDim2.new(0, 40, 0, 0)
     CurrentBondLabel.BackgroundTransparency = 1
     CurrentBondLabel.Text = "INVENTORY : ???"
     CurrentBondLabel.TextColor3 = Color3.fromRGB(0, 180, 255)
@@ -202,13 +203,20 @@ if game.PlaceId == 70876832253163 then
 
     local StatusLabel = Instance.new("TextLabel", Card3)
     StatusLabel.Size = UDim2.new(1, -40, 1, 0)
-    StatusLabel.Position = UDim2.new(0, 38, 0, 0)
+    StatusLabel.Position = UDim2.new(0, 40, 0, 0)
     StatusLabel.BackgroundTransparency = 1
     StatusLabel.Text = "SYSTEM : Active & Running"
     StatusLabel.TextColor3 = Color3.fromRGB(255, 180, 0)
     StatusLabel.TextSize = 12
     StatusLabel.Font = Enum.Font.GothamMedium
     StatusLabel.TextXAlignment = Enum.TextXAlignment.Left
+
+    -- // ============== APPEARANCE ANIMATION ==============
+    TweenService:Create(MainFrame, TweenInfo.new(0.6, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {
+        Size = UDim2.new(0, 360, 0, 210),
+        Position = UDim2.new(0.5, -180, 0.5, -105),
+        BackgroundTransparency = 0.05
+    }):Play()
 
     -- Dynamic Inventory Counter Listener
     local CurrentBond = LP:WaitForChild("PlayerGui"):WaitForChild("BondGui"):WaitForChild("BondInfo"):WaitForChild("BondCount")
@@ -264,6 +272,7 @@ elseif game.PlaceId == 116495829188952 then
 
     local Players = game:GetService("Players")
     local RS = game:GetService("ReplicatedStorage")
+    local TweenService = game:GetService("TweenService")
     local LP = Players.LocalPlayer
 
     local Remotes = require(RS:WaitForChild("Shared"):WaitForChild("Universe"):WaitForChild("Remotes"))
@@ -278,7 +287,7 @@ elseif game.PlaceId == 116495829188952 then
     local stuckCheckStart = 0
     local waitingForReservation = false
 
-    -- // ============== UI ENGINE (LOBBY FIXED) ==============
+    -- // ============== UI ENGINE (LOBBY) ==============
     local CoreGui = (gethui and gethui() or game:GetService("CoreGui"))
 
     if CoreGui:FindFirstChild("HykoUILobby") then
@@ -294,13 +303,14 @@ elseif game.PlaceId == 116495829188952 then
 
     local MainFrame = Instance.new("Frame", ScreenGui)
     MainFrame.Name = "MainFrame"
-    MainFrame.Size = UDim2.new(0, 360, 0, 160)
-    MainFrame.Position = UDim2.new(0.5, -180, 0.5, -80)
+    MainFrame.Size = UDim2.new(0, 0, 0, 0)
+    MainFrame.Position = UDim2.new(0.5, 0, 0.5, 0)
     MainFrame.BackgroundColor3 = Color3.fromRGB(15, 15, 22)
-    MainFrame.BackgroundTransparency = 0.05
+    MainFrame.BackgroundTransparency = 1
     MainFrame.BorderSizePixel = 0
     MainFrame.Active = true
     MainFrame.Draggable = true
+    MainFrame.ClipsDescendants = true
 
     local MainCorner = Instance.new("UICorner", MainFrame)
     MainCorner.CornerRadius = UDim.new(0, 12)
@@ -342,7 +352,7 @@ elseif game.PlaceId == 116495829188952 then
     TitleLabel.Size = UDim2.new(1, -45, 1, 0)
     TitleLabel.Position = UDim2.new(0, 40, 0, 0)
     TitleLabel.BackgroundTransparency = 1
-    TitleLabel.Text = "HYKO // AUTO PARTY v1.1"
+    TitleLabel.Text = "HYKO // AUTO PARTY v1.2"
     TitleLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
     TitleLabel.TextSize = 13
     TitleLabel.Font = Enum.Font.GothamBold
@@ -381,6 +391,13 @@ elseif game.PlaceId == 116495829188952 then
     StatusLabel.TextXAlignment = Enum.TextXAlignment.Left
     StatusLabel.TextYAlignment = Enum.TextYAlignment.Center
     StatusLabel.TextWrapped = true
+
+    -- Appearence Animation
+    TweenService:Create(MainFrame, TweenInfo.new(0.6, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {
+        Size = UDim2.new(0, 360, 0, 160),
+        Position = UDim2.new(0.5, -180, 0.5, -80),
+        BackgroundTransparency = 0.05
+    }):Play()
 
     -- // Party Logic
     if Config.Auto_create_party == true then
