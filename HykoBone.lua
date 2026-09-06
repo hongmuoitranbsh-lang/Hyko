@@ -14,7 +14,7 @@ getgenv().Lobby_config = {
     Auto_recreate_party = true
 }
 
-local ScriptURL = "https://raw.githubusercontent.com/Zynkore/Hub/refs/heads/main/Games/Dead%20Rails/Auto%20bond.luau"
+local ScriptURL = "https://raw.githubusercontent.com/hongmuoitranbsh-lang/Hyko/refs/heads/main/HykoBone.lua"
 
 -- // Tự động load lại script khi teleport
 if queue_on_teleport then
