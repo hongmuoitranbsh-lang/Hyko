@@ -1,6 +1,6 @@
 repeat task.wait() until game:IsLoaded()
 
-print("Hyko v1.3.4 - Auto Farm & Lobby Loop (No Background)")
+print("Hyko v1.3.5 - Auto Farm & Back to Lobby Loop")
 
 -- // Configuration
 getgenv().Game_config = {
@@ -9,7 +9,7 @@ getgenv().Game_config = {
     Only_drop_bond = false
 }
 getgenv().Lobby_config = {
-    Players_number = 1, -- Auto tạo room 1 người
+    Players_number = 1, -- Auto tạo room Solo 1 người
     Auto_create_party = true,
     Auto_recreate_party = true
 }
@@ -23,7 +23,7 @@ end
 local Prefix = getgenv().Game_config
 local LobbyPrefix = getgenv().Lobby_config
 
--- // ============== MAIN GAME (IN-GAME) ==============
+-- // ============== MAIN GAME (IN-GAME FARM BONE) ==============
 if game.PlaceId == 70876832253163 then
     task.wait()
     local Config = {
@@ -46,7 +46,7 @@ if game.PlaceId == 70876832253163 then
 
     local CollectedBond = 0
 
-    -- // ============== UI ENGINE (CLEAN DARK) ==============
+    -- UI Modern Dark - No Image Background
     local CoreGui = (gethui and gethui() or game:GetService("CoreGui"))
 
     if CoreGui:FindFirstChild("HykoUI") then
@@ -73,7 +73,6 @@ if game.PlaceId == 70876832253163 then
     local MainCorner = Instance.new("UICorner", MainFrame)
     MainCorner.CornerRadius = UDim.new(0, 14)
 
-    -- Rainbow Glow Border
     local NeonStroke = Instance.new("UIStroke", MainFrame)
     NeonStroke.Thickness = 2
     NeonStroke.Color = Color3.fromRGB(0, 255, 200)
@@ -91,7 +90,6 @@ if game.PlaceId == 70876832253163 then
         end
     end)
 
-    -- Header Panel
     local Header = Instance.new("Frame", MainFrame)
     Header.Size = UDim2.new(1, 0, 0, 40)
     Header.BackgroundColor3 = Color3.fromRGB(22, 22, 32)
@@ -111,7 +109,7 @@ if game.PlaceId == 70876832253163 then
     TitleLabel.Size = UDim2.new(1, -45, 1, 0)
     TitleLabel.Position = UDim2.new(0, 40, 0, 0)
     TitleLabel.BackgroundTransparency = 1
-    TitleLabel.Text = "HYKO // AUTO FARM v1.3.4"
+    TitleLabel.Text = "HYKO // AUTO FARM v1.3.5"
     TitleLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
     TitleLabel.TextSize = 13
     TitleLabel.Font = Enum.Font.GothamBold
@@ -212,7 +210,7 @@ if game.PlaceId == 70876832253163 then
         CurrentBondLabel.Text = "INVENTORY : " .. tostring(CurrentBond.Text)
     end)
 
-    -- // ============== FARM LOGIC & TELEPORT LOBBY ==============
+    -- // Logic Farm & Out ra Lobby
     task.wait(3.2)
     task.spawn(function()
         local char = world:get_resource(comps.ClientStateResource).localCharacter
@@ -239,7 +237,7 @@ if game.PlaceId == 70876832253163 then
                 end
             end
 
-            -- Sau khi lượm xong Bone -> Reset & Teleport quay về Lobby
+            -- Khi gom xong Bone: Chuyển về Lobby
             StatusLabel.Text = "SYSTEM : Returning to Lobby..."
             task.wait(0.3)
             if Config.Auto_reset == true and LP.Character and LP.Character:FindFirstChild("Humanoid") then
@@ -247,12 +245,12 @@ if game.PlaceId == 70876832253163 then
             end
             
             if Config.Auto_teleport == true then
-                TeleportService:Teleport(116495829188952, LP) -- Trở về Lobby Place ID để bắt đầu tạo phòng mới
+                TeleportService:Teleport(116495829188952, LP) -- Out game về Lobby
             end
         end
     end)
 
--- // ============== LOBBY (TẠO SOLO PARTY) ==============
+-- // ============== LOBBY (TỰ TẠO PARTY ĐỂ VÀO GAME LẠI) ==============
 elseif game.PlaceId == 116495829188952 then
     task.wait(1.8)
     local Config = {
@@ -278,7 +276,6 @@ elseif game.PlaceId == 116495829188952 then
     local stuckCheckStart = 0
     local waitingForReservation = false
 
-    -- // ============== UI ENGINE (LOBBY - CLEAN DARK) ==============
     local CoreGui = (gethui and gethui() or game:GetService("CoreGui"))
 
     if CoreGui:FindFirstChild("HykoUILobby") then
@@ -341,7 +338,7 @@ elseif game.PlaceId == 116495829188952 then
     TitleLabel.Size = UDim2.new(1, -45, 1, 0)
     TitleLabel.Position = UDim2.new(0, 40, 0, 0)
     TitleLabel.BackgroundTransparency = 1
-    TitleLabel.Text = "HYKO // AUTO PARTY v1.3.4"
+    TitleLabel.Text = "HYKO // AUTO PARTY v1.3.5"
     TitleLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
     TitleLabel.TextSize = 13
     TitleLabel.Font = Enum.Font.GothamBold
@@ -372,7 +369,7 @@ elseif game.PlaceId == 116495829188952 then
     StatusLabel.Size = UDim2.new(1, -45, 1, 0)
     StatusLabel.Position = UDim2.new(0, 40, 0, 0)
     StatusLabel.BackgroundTransparency = 1
-    StatusLabel.Text = "PARTY STATUS :\nCreating Solo Party (1 Player)..."
+    StatusLabel.Text = "PARTY STATUS :\nCreating Party to Enter Game..."
     StatusLabel.TextColor3 = Color3.fromRGB(0, 230, 255)
     StatusLabel.TextSize = 12
     StatusLabel.Font = Enum.Font.GothamMedium
@@ -385,7 +382,7 @@ elseif game.PlaceId == 116495829188952 then
         Position = UDim2.new(0.5, -180, 0.5, -80)
     }):Play()
 
-    -- // Party Logic
+    -- // Party Auto Loop
     if Config.Auto_create_party == true then
         task.spawn(function()
             local hrp = LP.Character and LP.Character:FindFirstChild("HumanoidRootPart")
@@ -408,7 +405,7 @@ elseif game.PlaceId == 116495829188952 then
                         Remotes.CreateParty:FireServer(PartyCreationState.partySettings())
                         partyCreated = true
                         stuckCheckStart = 0
-                        StatusLabel.Text = "PARTY STATUS :\nSolo Party Created! Entering game..."
+                        StatusLabel.Text = "PARTY STATUS :\nParty Created! Entering game..."
                     end
                 end
             end)
@@ -513,7 +510,7 @@ elseif game.PlaceId == 116495829188952 then
                         Remotes.CreateParty:FireServer(PartyCreationState.partySettings())
                         partyCreated = true
                         stuckCheckStart = 0
-                        StatusLabel.Text = "PARTY STATUS :\nSolo Party Created! Entering game..."
+                        StatusLabel.Text = "PARTY STATUS :\nParty Created! Entering game..."
                     end
                 end
 
