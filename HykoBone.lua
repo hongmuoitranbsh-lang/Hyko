@@ -1,6 +1,6 @@
-repeat task.wait() until game:IsLoaded()
+Repeat task.wait() until game:IsLoaded()
 
-print("Hyko v1.1 - Dead Rails Auto Bond")
+print("Hyko v1.1 - Dead Rails Auto Bond [Cyberpunk Icons Redesign]")
 
 -- // Cấu hình
 getgenv().Game_config = {
@@ -46,7 +46,7 @@ if game.PlaceId == 70876832253163 then
 
     local CollectedBond = 0
 
-    -- // ============== UI HYko v1.1 ==============
+    -- // ============== NEW CYBERPUNK UI (GAME) ==============
     local TweenService = game:GetService("TweenService")
     local CoreGui = (gethui and gethui() or game:GetService("CoreGui"))
 
@@ -59,150 +59,181 @@ if game.PlaceId == 70876832253163 then
     ScreenGui.ResetOnSpawn = false
     ScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 
-    -- Nền mờ
-    local Background = Instance.new("Frame", ScreenGui)
-    Background.Size = UDim2.new(1, 0, 1, 0)
-    Background.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
-    Background.BackgroundTransparency = 0.5
-    Background.BorderSizePixel = 0
+    -- Overlay phủ kính mờ nhẹ
+    local BlurOverlay = Instance.new("Frame", ScreenGui)
+    BlurOverlay.Size = UDim2.new(1, 0, 1, 0)
+    BlurOverlay.BackgroundColor3 = Color3.fromRGB(5, 5, 10)
+    BlurOverlay.BackgroundTransparency = 0.65
+    BlurOverlay.BorderSizePixel = 0
 
     -- Khung chính
     local MainFrame = Instance.new("Frame", ScreenGui)
     MainFrame.Name = "MainFrame"
-    MainFrame.Size = UDim2.new(0, 400, 0, 180)
-    MainFrame.Position = UDim2.new(0.5, -200, 0.5, -90)
-    MainFrame.BackgroundColor3 = Color3.fromRGB(20, 20, 27)
-    MainFrame.BackgroundTransparency = 0.15
+    MainFrame.Size = UDim2.new(0, 380, 0, 220)
+    MainFrame.Position = UDim2.new(0.5, -190, 0.5, -110)
+    MainFrame.BackgroundColor3 = Color3.fromRGB(12, 10, 20)
+    MainFrame.BackgroundTransparency = 0.1
     MainFrame.BorderSizePixel = 0
     MainFrame.Active = true
     MainFrame.Draggable = true
 
-    local Corner = Instance.new("UICorner", MainFrame)
-    Corner.CornerRadius = UDim.new(0, 18)
+    local MainCorner = Instance.new("UICorner", MainFrame)
+    MainCorner.CornerRadius = UDim.new(0, 16)
 
-    -- Glow viền
-    local Glow1 = Instance.new("UIStroke", MainFrame)
-    Glow1.Thickness = 2
-    Glow1.Color = Color3.fromRGB(0, 200, 255)
-    Glow1.Transparency = 0.2
-    local Glow2 = Instance.new("UIStroke", MainFrame)
-    Glow2.Thickness = 6
-    Glow2.Color = Color3.fromRGB(0, 150, 255)
-    Glow2.Transparency = 0.6
-    local Glow3 = Instance.new("UIStroke", MainFrame)
-    Glow3.Thickness = 12
-    Glow3.Color = Color3.fromRGB(0, 100, 255)
-    Glow3.Transparency = 0.85
+    -- Hiệu ứng Glow Neon
+    local NeonStroke = Instance.new("UIStroke", MainFrame)
+    NeonStroke.Thickness = 2
+    NeonStroke.Color = Color3.fromRGB(180, 50, 255)
+    NeonStroke.Transparency = 0.2
 
-    -- Gradient nền
-    local Gradient = Instance.new("UIGradient", MainFrame)
-    Gradient.Color = ColorSequence.new{
-        ColorSequenceKeypoint.new(0, Color3.fromRGB(30, 30, 40)),
-        ColorSequenceKeypoint.new(1, Color3.fromRGB(18, 18, 26))
+    local GlowOuter = Instance.new("UIStroke", MainFrame)
+    GlowOuter.Thickness = 8
+    GlowOuter.Color = Color3.fromRGB(120, 0, 255)
+    GlowOuter.Transparency = 0.75
+
+    -- Gradient chuyển màu Neon
+    local MainGradient = Instance.new("UIGradient", MainFrame)
+    MainGradient.Color = ColorSequence.new{
+        ColorSequenceKeypoint.new(0, Color3.fromRGB(25, 15, 38)),
+        ColorSequenceKeypoint.new(0.5, Color3.fromRGB(15, 10, 25)),
+        ColorSequenceKeypoint.new(1, Color3.fromRGB(8, 8, 15))
     }
-    Gradient.Rotation = 45
+    MainGradient.Rotation = 135
 
     -- Header
     local Header = Instance.new("Frame", MainFrame)
-    Header.Size = UDim2.new(1, 0, 0, 38)
-    Header.BackgroundColor3 = Color3.fromRGB(45, 45, 60)
-    Header.BackgroundTransparency = 0.3
+    Header.Size = UDim2.new(1, 0, 0, 42)
+    Header.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+    Header.BackgroundTransparency = 0.95
     Header.BorderSizePixel = 0
+
     local HeaderCorner = Instance.new("UICorner", Header)
-    HeaderCorner.CornerRadius = UDim.new(0, 18)
+    HeaderCorner.CornerRadius = UDim.new(0, 16)
 
-    -- Logo (icon Roblox)
-    local Logo = Instance.new("ImageLabel", Header)
-    Logo.Size = UDim2.new(0, 28, 0, 28)
-    Logo.Position = UDim2.new(0, 10, 0, 5)
-    Logo.BackgroundTransparency = 1
-    Logo.Image = "rbxassetid://7484762806" -- Roblox logo
-    Logo.ScaleType = Enum.ScaleType.Fit
+    -- Logo Icon Roblox (Controller/Gamepad)
+    local HeaderIcon = Instance.new("ImageLabel", Header)
+    HeaderIcon.Size = UDim2.new(0, 22, 0, 22)
+    HeaderIcon.Position = UDim2.new(0, 14, 0.5, -11)
+    HeaderIcon.BackgroundTransparency = 1
+    HeaderIcon.Image = "rbxassetid://6031280882" -- Gamepad Icon
+    HeaderIcon.ImageColor3 = Color3.fromRGB(180, 50, 255)
 
-    -- Tiêu đề
+    -- Tiêu đề UI
     local TitleLabel = Instance.new("TextLabel", Header)
     TitleLabel.Size = UDim2.new(1, -50, 1, 0)
-    TitleLabel.Position = UDim2.new(0, 45, 0, 0)
+    TitleLabel.Position = UDim2.new(0, 44, 0, 0)
     TitleLabel.BackgroundTransparency = 1
-    TitleLabel.Text = "Hyko v1.1 - Auto Bond"
-    TitleLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
-    TitleLabel.TextSize = 16
+    TitleLabel.Text = "HYKO // AUTO BOND v1.1"
+    TitleLabel.TextColor3 = Color3.fromRGB(240, 240, 255)
+    TitleLabel.TextSize = 13
     TitleLabel.Font = Enum.Font.GothamBold
     TitleLabel.TextXAlignment = Enum.TextXAlignment.Left
 
-    -- Đường kẻ
-    local Divider = Instance.new("Frame", MainFrame)
-    Divider.Size = UDim2.new(1, -40, 0, 1)
-    Divider.Position = UDim2.new(0, 20, 0, 38)
-    Divider.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-    Divider.BackgroundTransparency = 0.7
-    Divider.BorderSizePixel = 0
+    -- Đường cắt Gradient
+    local Line = Instance.new("Frame", MainFrame)
+    Line.Size = UDim2.new(1, -30, 0, 1)
+    Line.Position = UDim2.new(0, 15, 0, 42)
+    Line.BackgroundColor3 = Color3.fromRGB(180, 50, 255)
+    Line.BackgroundTransparency = 0.6
+    Line.BorderSizePixel = 0
 
-    -- Nhãn bond thu thập (icon + text)
-    local BondIcon = Instance.new("ImageLabel", MainFrame)
-    BondIcon.Size = UDim2.new(0, 22, 0, 22)
-    BondIcon.Position = UDim2.new(0, 25, 0, 50)
-    BondIcon.BackgroundTransparency = 1
-    BondIcon.Image = "rbxassetid://7484763188" -- Coin icon
-    BondIcon.ScaleType = Enum.ScaleType.Fit
+    -- Container hiển thị thông số
+    local ContentContainer = Instance.new("Frame", MainFrame)
+    ContentContainer.Size = UDim2.new(1, -30, 0, 155)
+    ContentContainer.Position = UDim2.new(0, 15, 0, 52)
+    ContentContainer.BackgroundTransparency = 1
 
-    local BondLabel = Instance.new("TextLabel", MainFrame)
-    BondLabel.Size = UDim2.new(0, 180, 0, 24)
-    BondLabel.Position = UDim2.new(0, 55, 0, 50)
+    -- Card 1: Collected Bonds
+    local Card1 = Instance.new("Frame", ContentContainer)
+    Card1.Size = UDim2.new(1, 0, 0, 42)
+    Card1.Position = UDim2.new(0, 0, 0, 0)
+    Card1.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+    Card1.BackgroundTransparency = 0.95
+    Card1.BorderSizePixel = 0
+    local C1Corner = Instance.new("UICorner", Card1)
+    C1Corner.CornerRadius = UDim.new(0, 8)
+
+    local Icon1 = Instance.new("ImageLabel", Card1)
+    Icon1.Size = UDim2.new(0, 20, 0, 20)
+    Icon1.Position = UDim2.new(0, 12, 0.5, -10)
+    Icon1.BackgroundTransparency = 1
+    Icon1.Image = "rbxassetid://6034043463" -- Coin/Trophy Icon
+    Icon1.ImageColor3 = Color3.fromRGB(0, 255, 180)
+
+    local BondLabel = Instance.new("TextLabel", Card1)
+    BondLabel.Size = UDim2.new(1, -45, 1, 0)
+    BondLabel.Position = UDim2.new(0, 40, 0, 0)
     BondLabel.BackgroundTransparency = 1
-    BondLabel.Text = "Bond(s): 0"
-    BondLabel.TextColor3 = Color3.fromRGB(0, 255, 150)
-    BondLabel.TextSize = 15
+    BondLabel.Text = "COLLECTED :  0"
+    BondLabel.TextColor3 = Color3.fromRGB(0, 255, 180)
+    BondLabel.TextSize = 13
     BondLabel.Font = Enum.Font.GothamBold
     BondLabel.TextXAlignment = Enum.TextXAlignment.Left
 
-    -- Nhãn current bond (icon + text)
-    local CurrentIcon = Instance.new("ImageLabel", MainFrame)
-    CurrentIcon.Size = UDim2.new(0, 22, 0, 22)
-    CurrentIcon.Position = UDim2.new(0, 25, 0, 82)
-    CurrentIcon.BackgroundTransparency = 1
-    CurrentIcon.Image = "rbxassetid://7484763674" -- Bag icon
-    CurrentIcon.ScaleType = Enum.ScaleType.Fit
+    -- Card 2: Current Inventory
+    local Card2 = Instance.new("Frame", ContentContainer)
+    Card2.Size = UDim2.new(1, 0, 0, 42)
+    Card2.Position = UDim2.new(0, 0, 0, 48)
+    Card2.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+    Card2.BackgroundTransparency = 0.95
+    Card2.BorderSizePixel = 0
+    local C2Corner = Instance.new("UICorner", Card2)
+    C2Corner.CornerRadius = UDim.new(0, 8)
 
-    local CurrentBondLabel = Instance.new("TextLabel", MainFrame)
-    CurrentBondLabel.Size = UDim2.new(0, 220, 0, 24)
-    CurrentBondLabel.Position = UDim2.new(0, 55, 0, 82)
+    local Icon2 = Instance.new("ImageLabel", Card2)
+    Icon2.Size = UDim2.new(0, 20, 0, 20)
+    Icon2.Position = UDim2.new(0, 12, 0.5, -10)
+    Icon2.BackgroundTransparency = 1
+    Icon2.Image = "rbxassetid://6034451733" -- Backpack/Inventory Icon
+    Icon2.ImageColor3 = Color3.fromRGB(0, 190, 255)
+
+    local CurrentBondLabel = Instance.new("TextLabel", Card2)
+    CurrentBondLabel.Size = UDim2.new(1, -45, 1, 0)
+    CurrentBondLabel.Position = UDim2.new(0, 40, 0, 0)
     CurrentBondLabel.BackgroundTransparency = 1
-    CurrentBondLabel.Text = "Current: ???"
-    CurrentBondLabel.TextColor3 = Color3.fromRGB(100, 180, 255)
-    CurrentBondLabel.TextSize = 15
+    CurrentBondLabel.Text = "INVENTORY :  ???"
+    CurrentBondLabel.TextColor3 = Color3.fromRGB(0, 190, 255)
+    CurrentBondLabel.TextSize = 13
     CurrentBondLabel.Font = Enum.Font.GothamBold
     CurrentBondLabel.TextXAlignment = Enum.TextXAlignment.Left
 
-    -- Nhãn trạng thái (icon + text)
-    local StatusIcon = Instance.new("ImageLabel", MainFrame)
-    StatusIcon.Size = UDim2.new(0, 22, 0, 22)
-    StatusIcon.Position = UDim2.new(0, 25, 0, 114)
-    StatusIcon.BackgroundTransparency = 1
-    StatusIcon.Image = "rbxassetid://7484762896" -- Settings icon
-    StatusIcon.ScaleType = Enum.ScaleType.Fit
+    -- Card 3: Status
+    local Card3 = Instance.new("Frame", ContentContainer)
+    Card3.Size = UDim2.new(1, 0, 0, 42)
+    Card3.Position = UDim2.new(0, 0, 0, 96)
+    Card3.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+    Card3.BackgroundTransparency = 0.95
+    Card3.BorderSizePixel = 0
+    local C3Corner = Instance.new("UICorner", Card3)
+    C3Corner.CornerRadius = UDim.new(0, 8)
 
-    local StatusLabel = Instance.new("TextLabel", MainFrame)
-    StatusLabel.Size = UDim2.new(0, 220, 0, 24)
-    StatusLabel.Position = UDim2.new(0, 55, 0, 114)
+    local Icon3 = Instance.new("ImageLabel", Card3)
+    Icon3.Size = UDim2.new(0, 20, 0, 20)
+    Icon3.Position = UDim2.new(0, 12, 0.5, -10)
+    Icon3.BackgroundTransparency = 1
+    Icon3.Image = "rbxassetid://6031280882" -- Settings/System Icon
+    Icon3.ImageColor3 = Color3.fromRGB(255, 180, 0)
+
+    local StatusLabel = Instance.new("TextLabel", Card3)
+    StatusLabel.Size = UDim2.new(1, -45, 1, 0)
+    StatusLabel.Position = UDim2.new(0, 40, 0, 0)
     StatusLabel.BackgroundTransparency = 1
-    StatusLabel.Text = "Đang hoạt động..."
-    StatusLabel.TextColor3 = Color3.fromRGB(255, 200, 0)
-    StatusLabel.TextSize = 14
-    StatusLabel.Font = Enum.Font.Gotham
+    StatusLabel.Text = "SYSTEM :  Đang hoạt động..."
+    StatusLabel.TextColor3 = Color3.fromRGB(255, 180, 0)
+    StatusLabel.TextSize = 12
+    StatusLabel.Font = Enum.Font.GothamMedium
     StatusLabel.TextXAlignment = Enum.TextXAlignment.Left
 
-    -- Fade in
+    -- Dynamic Intro Animation
     MainFrame.BackgroundTransparency = 1
-    local fadeIn = TweenService:Create(MainFrame, TweenInfo.new(0.5, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
-        BackgroundTransparency = 0.15
-    })
-    fadeIn:Play()
+    TweenService:Create(MainFrame, TweenInfo.new(0.6, Enum.EasingStyle.Quart, Enum.EasingDirection.Out), {
+        BackgroundTransparency = 0.1
+    }):Play()
 
     -- Cập nhật current bond
     local CurrentBond = LP:WaitForChild("PlayerGui"):WaitForChild("BondGui"):WaitForChild("BondInfo"):WaitForChild("BondCount")
     CurrentBond:GetPropertyChangedSignal("Text"):Connect(function()
-        CurrentBondLabel.Text = "Current: " .. tostring(CurrentBond.Text)
+        CurrentBondLabel.Text = "INVENTORY :  " .. tostring(CurrentBond.Text)
     end)
 
     -- // ============== LOGIC FARM ==============
@@ -225,7 +256,7 @@ if game.PlaceId == 70876832253163 then
                         end
 
                         CollectedBond += 1
-                        BondLabel.Text = "Bond(s): " .. CollectedBond
+                        BondLabel.Text = "COLLECTED :  " .. CollectedBond
                         task.wait(0.20)
                     end
                 end
@@ -266,9 +297,10 @@ elseif game.PlaceId == 116495829188952 then
     local stuckCheckStart = 0
     local waitingForReservation = false
 
-    -- // UI Lobby (Hyko v1.1)
+    -- // ============== NEW CYBERPUNK UI (LOBBY) ==============
     local TweenService = game:GetService("TweenService")
     local CoreGui = (gethui and gethui() or game:GetService("CoreGui"))
+
     if CoreGui:FindFirstChild("HykoUILobby") then
         CoreGui["HykoUILobby"]:Destroy()
     end
@@ -278,100 +310,116 @@ elseif game.PlaceId == 116495829188952 then
     ScreenGui.ResetOnSpawn = false
     ScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 
-    local Background = Instance.new("Frame", ScreenGui)
-    Background.Size = UDim2.new(1, 0, 1, 0)
-    Background.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
-    Background.BackgroundTransparency = 0.5
-    Background.BorderSizePixel = 0
+    local BlurOverlay = Instance.new("Frame", ScreenGui)
+    BlurOverlay.Size = UDim2.new(1, 0, 1, 0)
+    BlurOverlay.BackgroundColor3 = Color3.fromRGB(5, 5, 10)
+    BlurOverlay.BackgroundTransparency = 0.65
+    BlurOverlay.BorderSizePixel = 0
 
     local MainFrame = Instance.new("Frame", ScreenGui)
-    MainFrame.Size = UDim2.new(0, 400, 0, 160)
-    MainFrame.Position = UDim2.new(0.5, -200, 0.5, -80)
-    MainFrame.BackgroundColor3 = Color3.fromRGB(22, 22, 30)
-    MainFrame.BackgroundTransparency = 0.15
+    MainFrame.Name = "MainFrame"
+    MainFrame.Size = UDim2.new(0, 380, 0, 170)
+    MainFrame.Position = UDim2.new(0.5, -190, 0.5, -85)
+    MainFrame.BackgroundColor3 = Color3.fromRGB(12, 10, 20)
+    MainFrame.BackgroundTransparency = 0.1
     MainFrame.BorderSizePixel = 0
     MainFrame.Active = true
     MainFrame.Draggable = true
 
-    local Corner = Instance.new("UICorner", MainFrame)
-    Corner.CornerRadius = UDim.new(0, 18)
+    local MainCorner = Instance.new("UICorner", MainFrame)
+    MainCorner.CornerRadius = UDim.new(0, 16)
 
-    local Glow1 = Instance.new("UIStroke", MainFrame)
-    Glow1.Thickness = 2
-    Glow1.Color = Color3.fromRGB(255, 100, 255)
-    Glow1.Transparency = 0.2
-    local Glow2 = Instance.new("UIStroke", MainFrame)
-    Glow2.Thickness = 6
-    Glow2.Color = Color3.fromRGB(200, 50, 255)
-    Glow2.Transparency = 0.6
-    local Glow3 = Instance.new("UIStroke", MainFrame)
-    Glow3.Thickness = 12
-    Glow3.Color = Color3.fromRGB(150, 0, 255)
-    Glow3.Transparency = 0.85
+    local NeonStroke = Instance.new("UIStroke", MainFrame)
+    NeonStroke.Thickness = 2
+    NeonStroke.Color = Color3.fromRGB(0, 220, 255)
+    NeonStroke.Transparency = 0.2
 
-    local Gradient = Instance.new("UIGradient", MainFrame)
-    Gradient.Color = ColorSequence.new{
-        ColorSequenceKeypoint.new(0, Color3.fromRGB(40, 30, 50)),
-        ColorSequenceKeypoint.new(1, Color3.fromRGB(25, 20, 35))
+    local GlowOuter = Instance.new("UIStroke", MainFrame)
+    GlowOuter.Thickness = 8
+    GlowOuter.Color = Color3.fromRGB(0, 120, 255)
+    GlowOuter.Transparency = 0.75
+
+    local MainGradient = Instance.new("UIGradient", MainFrame)
+    MainGradient.Color = ColorSequence.new{
+        ColorSequenceKeypoint.new(0, Color3.fromRGB(15, 25, 38)),
+        ColorSequenceKeypoint.new(0.5, Color3.fromRGB(10, 15, 25)),
+        ColorSequenceKeypoint.new(1, Color3.fromRGB(8, 8, 15))
     }
-    Gradient.Rotation = -45
+    MainGradient.Rotation = -135
 
     local Header = Instance.new("Frame", MainFrame)
-    Header.Size = UDim2.new(1, 0, 0, 38)
-    Header.BackgroundColor3 = Color3.fromRGB(50, 45, 65)
-    Header.BackgroundTransparency = 0.3
+    Header.Size = UDim2.new(1, 0, 0, 42)
+    Header.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+    Header.BackgroundTransparency = 0.95
     Header.BorderSizePixel = 0
-    local HeaderCorner = Instance.new("UICorner", Header)
-    HeaderCorner.CornerRadius = UDim.new(0, 18)
 
-    local Logo = Instance.new("ImageLabel", Header)
-    Logo.Size = UDim2.new(0, 28, 0, 28)
-    Logo.Position = UDim2.new(0, 10, 0, 5)
-    Logo.BackgroundTransparency = 1
-    Logo.Image = "rbxassetid://7484762806"
-    Logo.ScaleType = Enum.ScaleType.Fit
+    local HeaderCorner = Instance.new("UICorner", Header)
+    HeaderCorner.CornerRadius = UDim.new(0, 16)
+
+    -- Logo Lobby Icon Roblox
+    local HeaderIcon = Instance.new("ImageLabel", Header)
+    HeaderIcon.Size = UDim2.new(0, 22, 0, 22)
+    HeaderIcon.Position = UDim2.new(0, 14, 0.5, -11)
+    HeaderIcon.BackgroundTransparency = 1
+    HeaderIcon.Image = "rbxassetid://6034287594" -- Users/Group Icon
+    HeaderIcon.ImageColor3 = Color3.fromRGB(0, 220, 255)
 
     local TitleLabel = Instance.new("TextLabel", Header)
     TitleLabel.Size = UDim2.new(1, -50, 1, 0)
-    TitleLabel.Position = UDim2.new(0, 45, 0, 0)
+    TitleLabel.Position = UDim2.new(0, 44, 0, 0)
     TitleLabel.BackgroundTransparency = 1
-    TitleLabel.Text = "Hyko v1.1 - Auto Party"
-    TitleLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
-    TitleLabel.TextSize = 16
+    TitleLabel.Text = "HYKO // AUTO PARTY v1.1"
+    TitleLabel.TextColor3 = Color3.fromRGB(240, 240, 255)
+    TitleLabel.TextSize = 13
     TitleLabel.Font = Enum.Font.GothamBold
     TitleLabel.TextXAlignment = Enum.TextXAlignment.Left
 
-    local Divider = Instance.new("Frame", MainFrame)
-    Divider.Size = UDim2.new(1, -40, 0, 1)
-    Divider.Position = UDim2.new(0, 20, 0, 38)
-    Divider.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-    Divider.BackgroundTransparency = 0.7
-    Divider.BorderSizePixel = 0
+    local Line = Instance.new("Frame", MainFrame)
+    Line.Size = UDim2.new(1, -30, 0, 1)
+    Line.Position = UDim2.new(0, 15, 0, 42)
+    Line.BackgroundColor3 = Color3.fromRGB(0, 220, 255)
+    Line.BackgroundTransparency = 0.6
+    Line.BorderSizePixel = 0
 
-    local StatusIcon = Instance.new("ImageLabel", MainFrame)
-    StatusIcon.Size = UDim2.new(0, 22, 0, 22)
-    StatusIcon.Position = UDim2.new(0, 25, 0, 55)
-    StatusIcon.BackgroundTransparency = 1
-    StatusIcon.Image = "rbxassetid://7484762896"
-    StatusIcon.ScaleType = Enum.ScaleType.Fit
+    local ContentContainer = Instance.new("Frame", MainFrame)
+    ContentContainer.Size = UDim2.new(1, -30, 0, 105)
+    ContentContainer.Position = UDim2.new(0, 15, 0, 52)
+    ContentContainer.BackgroundTransparency = 1
 
-    local StatusLabel = Instance.new("TextLabel", MainFrame)
-    StatusLabel.Size = UDim2.new(0, 280, 0, 24)
-    StatusLabel.Position = UDim2.new(0, 55, 0, 55)
+    local Card = Instance.new("Frame", ContentContainer)
+    Card.Size = UDim2.new(1, 0, 0, 90)
+    Card.Position = UDim2.new(0, 0, 0, 5)
+    Card.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+    Card.BackgroundTransparency = 0.95
+    Card.BorderSizePixel = 0
+    local CardCorner = Instance.new("UICorner", Card)
+    CardCorner.CornerRadius = UDim.new(0, 8)
+
+    local LobbyIcon = Instance.new("ImageLabel", Card)
+    LobbyIcon.Size = UDim2.new(0, 22, 0, 22)
+    LobbyIcon.Position = UDim2.new(0, 12, 0.5, -11)
+    LobbyIcon.BackgroundTransparency = 1
+    LobbyIcon.Image = "rbxassetid://6031097225" -- Compass/Radar Icon
+    LobbyIcon.ImageColor3 = Color3.fromRGB(0, 220, 255)
+
+    local StatusLabel = Instance.new("TextLabel", Card)
+    StatusLabel.Size = UDim2.new(1, -50, 1, 0)
+    StatusLabel.Position = UDim2.new(0, 42, 0, 0)
     StatusLabel.BackgroundTransparency = 1
-    StatusLabel.Text = "Đang xử lý party..."
-    StatusLabel.TextColor3 = Color3.fromRGB(255, 200, 0)
-    StatusLabel.TextSize = 14
-    StatusLabel.Font = Enum.Font.Gotham
+    StatusLabel.Text = "LOBBY STATUS :\nĐang xử lý party..."
+    StatusLabel.TextColor3 = Color3.fromRGB(0, 220, 255)
+    StatusLabel.TextSize = 13
+    StatusLabel.Font = Enum.Font.GothamMedium
     StatusLabel.TextXAlignment = Enum.TextXAlignment.Left
+    StatusLabel.TextYAlignment = Enum.TextYAlignment.Center
+    StatusLabel.TextWrapped = true
 
     MainFrame.BackgroundTransparency = 1
-    local fadeIn = TweenService:Create(MainFrame, TweenInfo.new(0.5, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
-        BackgroundTransparency = 0.15
-    })
-    fadeIn:Play()
+    TweenService:Create(MainFrame, TweenInfo.new(0.6, Enum.EasingStyle.Quart, Enum.EasingDirection.Out), {
+        BackgroundTransparency = 0.1
+    }):Play()
 
-    -- // Logic party (như cũ, thêm cập nhật StatusLabel)
+    -- // Logic party
     if Config.Auto_create_party == true then
         task.spawn(function()
             local hrp = LP.Character and LP.Character:FindFirstChild("HumanoidRootPart")
@@ -394,7 +442,7 @@ elseif game.PlaceId == 116495829188952 then
                         Remotes.CreateParty:FireServer(PartyCreationState.partySettings())
                         partyCreated = true
                         stuckCheckStart = 0
-                        StatusLabel.Text = "Đã tạo party (tối đa " .. Config.Players_number .. " người)"
+                        StatusLabel.Text = "LOBBY STATUS :\nĐã tạo party (Tối đa: " .. Config.Players_number .. " người)"
                     end
                 end
             end)
@@ -403,13 +451,13 @@ elseif game.PlaceId == 116495829188952 then
                 partyCreated = true
                 waitingForReservation = false
                 stuckCheckStart = 0
-                StatusLabel.Text = "Party đã được tạo"
+                StatusLabel.Text = "LOBBY STATUS :\nParty đã được khởi tạo thành công!"
             end)
 
             exitConnection = Remotes.ExitParty.OnClientEvent:Connect(function()
                 partyCreated = false
                 partyMembers = 0
-                StatusLabel.Text = "Party đã rời, đang tạo lại..."
+                StatusLabel.Text = "LOBBY STATUS :\nĐã rời party, đang tiến hành tạo lại..."
                 if Config.Auto_recreate_party then
                     task.spawn(function()
                         task.wait(0.5)
@@ -433,14 +481,14 @@ elseif game.PlaceId == 116495829188952 then
 
             joinedConnection = Remotes.JoinnedParty.OnClientEvent:Connect(function()
                 partyMembers += 1
-                StatusLabel.Text = "Thành viên: " .. partyMembers
+                StatusLabel.Text = "LOBBY STATUS :\nThành viên hiện tại: " .. partyMembers
             end)
 
             expiredConnection = Remotes.PartyZoneReservationExpired.OnClientEvent:Connect(function()
                 partyCreated = false
                 waitingForReservation = false
                 stuckCheckStart = 0
-                StatusLabel.Text = "Hết hạn, tạo lại..."
+                StatusLabel.Text = "LOBBY STATUS :\nHết hạn, đang thử lại..."
                 if Config.Auto_recreate_party then
                     task.spawn(function()
                         task.wait(0.3)
@@ -499,7 +547,7 @@ elseif game.PlaceId == 116495829188952 then
                         Remotes.CreateParty:FireServer(PartyCreationState.partySettings())
                         partyCreated = true
                         stuckCheckStart = 0
-                        StatusLabel.Text = "Đã tạo party (tối đa " .. Config.Players_number .. " người)"
+                        StatusLabel.Text = "LOBBY STATUS :\nĐã tạo party (Tối đa: " .. Config.Players_number .. " người)"
                     end
                 end
 
