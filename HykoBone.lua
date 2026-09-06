@@ -1,8 +1,8 @@
 Repeat task.wait() until game:IsLoaded()
 
-print("Hyko v1.1 - Dead Rails Auto Bond [Cyberpunk Icons Redesign]")
+print("Hyko v1.1 - Dead Rails Auto Bond [English Edition]")
 
--- // Cấu hình
+-- // Configuration
 getgenv().Game_config = {
     Auto_reset = true,
     Auto_teleport = true,
@@ -16,7 +16,7 @@ getgenv().Lobby_config = {
 
 local ScriptURL = "https://raw.githubusercontent.com/hongmuoitranbsh-lang/Hyko/refs/heads/main/HykoBone.lua"
 
--- // Tự động load lại script khi teleport
+-- // Auto reload script on teleport
 if queue_on_teleport then
     queue_on_teleport("loadstring(game:HttpGet('" .. ScriptURL .. "'))()")
 end
@@ -24,7 +24,7 @@ end
 local Prefix = getgenv().Game_config
 local LobbyPrefix = getgenv().Lobby_config
 
--- // ============== GAME CHÍNH ==============
+-- // ============== MAIN GAME ==============
 if game.PlaceId == 70876832253163 then
     task.wait()
     local Config = {
@@ -46,7 +46,7 @@ if game.PlaceId == 70876832253163 then
 
     local CollectedBond = 0
 
-    -- // ============== NEW CYBERPUNK UI (GAME) ==============
+    -- // ============== UI ENGINE (GAME) ==============
     local TweenService = game:GetService("TweenService")
     local CoreGui = (gethui and gethui() or game:GetService("CoreGui"))
 
@@ -54,44 +54,38 @@ if game.PlaceId == 70876832253163 then
         CoreGui["HykoUI"]:Destroy()
     end
 
-    local ScreenGui = Instance.new("ScreenGui", CoreGui)
+    local ScreenGui = Instance.new("ScreenGui")
     ScreenGui.Name = "HykoUI"
     ScreenGui.ResetOnSpawn = false
     ScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+    ScreenGui.Parent = CoreGui
 
-    -- Overlay phủ kính mờ nhẹ
-    local BlurOverlay = Instance.new("Frame", ScreenGui)
-    BlurOverlay.Size = UDim2.new(1, 0, 1, 0)
-    BlurOverlay.BackgroundColor3 = Color3.fromRGB(5, 5, 10)
-    BlurOverlay.BackgroundTransparency = 0.65
-    BlurOverlay.BorderSizePixel = 0
-
-    -- Khung chính
+    -- Main Container
     local MainFrame = Instance.new("Frame", ScreenGui)
     MainFrame.Name = "MainFrame"
     MainFrame.Size = UDim2.new(0, 380, 0, 220)
     MainFrame.Position = UDim2.new(0.5, -190, 0.5, -110)
     MainFrame.BackgroundColor3 = Color3.fromRGB(12, 10, 20)
-    MainFrame.BackgroundTransparency = 0.1
+    MainFrame.BackgroundTransparency = 0.15
     MainFrame.BorderSizePixel = 0
     MainFrame.Active = true
     MainFrame.Draggable = true
 
     local MainCorner = Instance.new("UICorner", MainFrame)
-    MainCorner.CornerRadius = UDim.new(0, 16)
+    MainCorner.CornerRadius = UDim.new(0, 14)
 
-    -- Hiệu ứng Glow Neon
+    -- Glow Outer Border
     local NeonStroke = Instance.new("UIStroke", MainFrame)
     NeonStroke.Thickness = 2
     NeonStroke.Color = Color3.fromRGB(180, 50, 255)
     NeonStroke.Transparency = 0.2
 
     local GlowOuter = Instance.new("UIStroke", MainFrame)
-    GlowOuter.Thickness = 8
+    GlowOuter.Thickness = 6
     GlowOuter.Color = Color3.fromRGB(120, 0, 255)
-    GlowOuter.Transparency = 0.75
+    GlowOuter.Transparency = 0.7
 
-    -- Gradient chuyển màu Neon
+    -- Dark Gradient
     local MainGradient = Instance.new("UIGradient", MainFrame)
     MainGradient.Color = ColorSequence.new{
         ColorSequenceKeypoint.new(0, Color3.fromRGB(25, 15, 38)),
@@ -108,28 +102,28 @@ if game.PlaceId == 70876832253163 then
     Header.BorderSizePixel = 0
 
     local HeaderCorner = Instance.new("UICorner", Header)
-    HeaderCorner.CornerRadius = UDim.new(0, 16)
+    HeaderCorner.CornerRadius = UDim.new(0, 14)
 
-    -- Logo Icon Roblox (Controller/Gamepad)
+    -- Header Icon
     local HeaderIcon = Instance.new("ImageLabel", Header)
     HeaderIcon.Size = UDim2.new(0, 22, 0, 22)
     HeaderIcon.Position = UDim2.new(0, 14, 0.5, -11)
     HeaderIcon.BackgroundTransparency = 1
-    HeaderIcon.Image = "rbxassetid://6031280882" -- Gamepad Icon
+    HeaderIcon.Image = "rbxassetid://6031280882"
     HeaderIcon.ImageColor3 = Color3.fromRGB(180, 50, 255)
 
-    -- Tiêu đề UI
+    -- Title
     local TitleLabel = Instance.new("TextLabel", Header)
     TitleLabel.Size = UDim2.new(1, -50, 1, 0)
     TitleLabel.Position = UDim2.new(0, 44, 0, 0)
     TitleLabel.BackgroundTransparency = 1
-    TitleLabel.Text = "HYKO // AUTO BOND v1.1"
+    TitleLabel.Text = "HYKO // AUTO FARM v1.1"
     TitleLabel.TextColor3 = Color3.fromRGB(240, 240, 255)
     TitleLabel.TextSize = 13
     TitleLabel.Font = Enum.Font.GothamBold
     TitleLabel.TextXAlignment = Enum.TextXAlignment.Left
 
-    -- Đường cắt Gradient
+    -- Separator Line
     local Line = Instance.new("Frame", MainFrame)
     Line.Size = UDim2.new(1, -30, 0, 1)
     Line.Position = UDim2.new(0, 15, 0, 42)
@@ -137,13 +131,13 @@ if game.PlaceId == 70876832253163 then
     Line.BackgroundTransparency = 0.6
     Line.BorderSizePixel = 0
 
-    -- Container hiển thị thông số
+    -- Container
     local ContentContainer = Instance.new("Frame", MainFrame)
     ContentContainer.Size = UDim2.new(1, -30, 0, 155)
     ContentContainer.Position = UDim2.new(0, 15, 0, 52)
     ContentContainer.BackgroundTransparency = 1
 
-    -- Card 1: Collected Bonds
+    -- Card 1: Collected
     local Card1 = Instance.new("Frame", ContentContainer)
     Card1.Size = UDim2.new(1, 0, 0, 42)
     Card1.Position = UDim2.new(0, 0, 0, 0)
@@ -157,7 +151,7 @@ if game.PlaceId == 70876832253163 then
     Icon1.Size = UDim2.new(0, 20, 0, 20)
     Icon1.Position = UDim2.new(0, 12, 0.5, -10)
     Icon1.BackgroundTransparency = 1
-    Icon1.Image = "rbxassetid://6034043463" -- Coin/Trophy Icon
+    Icon1.Image = "rbxassetid://6034043463"
     Icon1.ImageColor3 = Color3.fromRGB(0, 255, 180)
 
     local BondLabel = Instance.new("TextLabel", Card1)
@@ -170,7 +164,7 @@ if game.PlaceId == 70876832253163 then
     BondLabel.Font = Enum.Font.GothamBold
     BondLabel.TextXAlignment = Enum.TextXAlignment.Left
 
-    -- Card 2: Current Inventory
+    -- Card 2: Inventory
     local Card2 = Instance.new("Frame", ContentContainer)
     Card2.Size = UDim2.new(1, 0, 0, 42)
     Card2.Position = UDim2.new(0, 0, 0, 48)
@@ -184,7 +178,7 @@ if game.PlaceId == 70876832253163 then
     Icon2.Size = UDim2.new(0, 20, 0, 20)
     Icon2.Position = UDim2.new(0, 12, 0.5, -10)
     Icon2.BackgroundTransparency = 1
-    Icon2.Image = "rbxassetid://6034451733" -- Backpack/Inventory Icon
+    Icon2.Image = "rbxassetid://6034451733"
     Icon2.ImageColor3 = Color3.fromRGB(0, 190, 255)
 
     local CurrentBondLabel = Instance.new("TextLabel", Card2)
@@ -211,32 +205,32 @@ if game.PlaceId == 70876832253163 then
     Icon3.Size = UDim2.new(0, 20, 0, 20)
     Icon3.Position = UDim2.new(0, 12, 0.5, -10)
     Icon3.BackgroundTransparency = 1
-    Icon3.Image = "rbxassetid://6031280882" -- Settings/System Icon
+    Icon3.Image = "rbxassetid://6031280882"
     Icon3.ImageColor3 = Color3.fromRGB(255, 180, 0)
 
     local StatusLabel = Instance.new("TextLabel", Card3)
     StatusLabel.Size = UDim2.new(1, -45, 1, 0)
     StatusLabel.Position = UDim2.new(0, 40, 0, 0)
     StatusLabel.BackgroundTransparency = 1
-    StatusLabel.Text = "SYSTEM :  Đang hoạt động..."
+    StatusLabel.Text = "SYSTEM STATUS : Running..."
     StatusLabel.TextColor3 = Color3.fromRGB(255, 180, 0)
     StatusLabel.TextSize = 12
     StatusLabel.Font = Enum.Font.GothamMedium
     StatusLabel.TextXAlignment = Enum.TextXAlignment.Left
 
-    -- Dynamic Intro Animation
+    -- Fade In Animation
     MainFrame.BackgroundTransparency = 1
-    TweenService:Create(MainFrame, TweenInfo.new(0.6, Enum.EasingStyle.Quart, Enum.EasingDirection.Out), {
-        BackgroundTransparency = 0.1
+    TweenService:Create(MainFrame, TweenInfo.new(0.5, Enum.EasingStyle.Quart, Enum.EasingDirection.Out), {
+        BackgroundTransparency = 0.15
     }):Play()
 
-    -- Cập nhật current bond
+    -- Update Inventory Text
     local CurrentBond = LP:WaitForChild("PlayerGui"):WaitForChild("BondGui"):WaitForChild("BondInfo"):WaitForChild("BondCount")
     CurrentBond:GetPropertyChangedSignal("Text"):Connect(function()
         CurrentBondLabel.Text = "INVENTORY :  " .. tostring(CurrentBond.Text)
     end)
 
-    -- // ============== LOGIC FARM ==============
+    -- // ============== FARM LOGIC ==============
     task.wait(3.2)
     task.spawn(function()
         local char = world:get_resource(comps.ClientStateResource).localCharacter
@@ -297,7 +291,7 @@ elseif game.PlaceId == 116495829188952 then
     local stuckCheckStart = 0
     local waitingForReservation = false
 
-    -- // ============== NEW CYBERPUNK UI (LOBBY) ==============
+    -- // ============== UI ENGINE (LOBBY) ==============
     local TweenService = game:GetService("TweenService")
     local CoreGui = (gethui and gethui() or game:GetService("CoreGui"))
 
@@ -305,29 +299,24 @@ elseif game.PlaceId == 116495829188952 then
         CoreGui["HykoUILobby"]:Destroy()
     end
 
-    local ScreenGui = Instance.new("ScreenGui", CoreGui)
+    local ScreenGui = Instance.new("ScreenGui")
     ScreenGui.Name = "HykoUILobby"
     ScreenGui.ResetOnSpawn = false
     ScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
-
-    local BlurOverlay = Instance.new("Frame", ScreenGui)
-    BlurOverlay.Size = UDim2.new(1, 0, 1, 0)
-    BlurOverlay.BackgroundColor3 = Color3.fromRGB(5, 5, 10)
-    BlurOverlay.BackgroundTransparency = 0.65
-    BlurOverlay.BorderSizePixel = 0
+    ScreenGui.Parent = CoreGui
 
     local MainFrame = Instance.new("Frame", ScreenGui)
     MainFrame.Name = "MainFrame"
     MainFrame.Size = UDim2.new(0, 380, 0, 170)
     MainFrame.Position = UDim2.new(0.5, -190, 0.5, -85)
     MainFrame.BackgroundColor3 = Color3.fromRGB(12, 10, 20)
-    MainFrame.BackgroundTransparency = 0.1
+    MainFrame.BackgroundTransparency = 0.15
     MainFrame.BorderSizePixel = 0
     MainFrame.Active = true
     MainFrame.Draggable = true
 
     local MainCorner = Instance.new("UICorner", MainFrame)
-    MainCorner.CornerRadius = UDim.new(0, 16)
+    MainCorner.CornerRadius = UDim.new(0, 14)
 
     local NeonStroke = Instance.new("UIStroke", MainFrame)
     NeonStroke.Thickness = 2
@@ -335,9 +324,9 @@ elseif game.PlaceId == 116495829188952 then
     NeonStroke.Transparency = 0.2
 
     local GlowOuter = Instance.new("UIStroke", MainFrame)
-    GlowOuter.Thickness = 8
+    GlowOuter.Thickness = 6
     GlowOuter.Color = Color3.fromRGB(0, 120, 255)
-    GlowOuter.Transparency = 0.75
+    GlowOuter.Transparency = 0.7
 
     local MainGradient = Instance.new("UIGradient", MainFrame)
     MainGradient.Color = ColorSequence.new{
@@ -354,14 +343,13 @@ elseif game.PlaceId == 116495829188952 then
     Header.BorderSizePixel = 0
 
     local HeaderCorner = Instance.new("UICorner", Header)
-    HeaderCorner.CornerRadius = UDim.new(0, 16)
+    HeaderCorner.CornerRadius = UDim.new(0, 14)
 
-    -- Logo Lobby Icon Roblox
     local HeaderIcon = Instance.new("ImageLabel", Header)
     HeaderIcon.Size = UDim2.new(0, 22, 0, 22)
     HeaderIcon.Position = UDim2.new(0, 14, 0.5, -11)
     HeaderIcon.BackgroundTransparency = 1
-    HeaderIcon.Image = "rbxassetid://6034287594" -- Users/Group Icon
+    HeaderIcon.Image = "rbxassetid://6034287594"
     HeaderIcon.ImageColor3 = Color3.fromRGB(0, 220, 255)
 
     local TitleLabel = Instance.new("TextLabel", Header)
@@ -399,14 +387,14 @@ elseif game.PlaceId == 116495829188952 then
     LobbyIcon.Size = UDim2.new(0, 22, 0, 22)
     LobbyIcon.Position = UDim2.new(0, 12, 0.5, -11)
     LobbyIcon.BackgroundTransparency = 1
-    LobbyIcon.Image = "rbxassetid://6031097225" -- Compass/Radar Icon
+    LobbyIcon.Image = "rbxassetid://6031097225"
     LobbyIcon.ImageColor3 = Color3.fromRGB(0, 220, 255)
 
     local StatusLabel = Instance.new("TextLabel", Card)
     StatusLabel.Size = UDim2.new(1, -50, 1, 0)
     StatusLabel.Position = UDim2.new(0, 42, 0, 0)
     StatusLabel.BackgroundTransparency = 1
-    StatusLabel.Text = "LOBBY STATUS :\nĐang xử lý party..."
+    StatusLabel.Text = "PARTY STATUS :\nInitializing matchmaking..."
     StatusLabel.TextColor3 = Color3.fromRGB(0, 220, 255)
     StatusLabel.TextSize = 13
     StatusLabel.Font = Enum.Font.GothamMedium
@@ -415,11 +403,11 @@ elseif game.PlaceId == 116495829188952 then
     StatusLabel.TextWrapped = true
 
     MainFrame.BackgroundTransparency = 1
-    TweenService:Create(MainFrame, TweenInfo.new(0.6, Enum.EasingStyle.Quart, Enum.EasingDirection.Out), {
-        BackgroundTransparency = 0.1
+    TweenService:Create(MainFrame, TweenInfo.new(0.5, Enum.EasingStyle.Quart, Enum.EasingDirection.Out), {
+        BackgroundTransparency = 0.15
     }):Play()
 
-    -- // Logic party
+    -- // Party Logic
     if Config.Auto_create_party == true then
         task.spawn(function()
             local hrp = LP.Character and LP.Character:FindFirstChild("HumanoidRootPart")
@@ -442,7 +430,7 @@ elseif game.PlaceId == 116495829188952 then
                         Remotes.CreateParty:FireServer(PartyCreationState.partySettings())
                         partyCreated = true
                         stuckCheckStart = 0
-                        StatusLabel.Text = "LOBBY STATUS :\nĐã tạo party (Tối đa: " .. Config.Players_number .. " người)"
+                        StatusLabel.Text = "PARTY STATUS :\nParty created (Max: " .. Config.Players_number .. " players)"
                     end
                 end
             end)
@@ -451,13 +439,13 @@ elseif game.PlaceId == 116495829188952 then
                 partyCreated = true
                 waitingForReservation = false
                 stuckCheckStart = 0
-                StatusLabel.Text = "LOBBY STATUS :\nParty đã được khởi tạo thành công!"
+                StatusLabel.Text = "PARTY STATUS :\nParty created successfully!"
             end)
 
             exitConnection = Remotes.ExitParty.OnClientEvent:Connect(function()
                 partyCreated = false
                 partyMembers = 0
-                StatusLabel.Text = "LOBBY STATUS :\nĐã rời party, đang tiến hành tạo lại..."
+                StatusLabel.Text = "PARTY STATUS :\nLeft party, recreating..."
                 if Config.Auto_recreate_party then
                     task.spawn(function()
                         task.wait(0.5)
@@ -481,14 +469,14 @@ elseif game.PlaceId == 116495829188952 then
 
             joinedConnection = Remotes.JoinnedParty.OnClientEvent:Connect(function()
                 partyMembers += 1
-                StatusLabel.Text = "LOBBY STATUS :\nThành viên hiện tại: " .. partyMembers
+                StatusLabel.Text = "PARTY STATUS :\nCurrent Members: " .. partyMembers
             end)
 
             expiredConnection = Remotes.PartyZoneReservationExpired.OnClientEvent:Connect(function()
                 partyCreated = false
                 waitingForReservation = false
                 stuckCheckStart = 0
-                StatusLabel.Text = "LOBBY STATUS :\nHết hạn, đang thử lại..."
+                StatusLabel.Text = "PARTY STATUS :\nReservation expired, retrying..."
                 if Config.Auto_recreate_party then
                     task.spawn(function()
                         task.wait(0.3)
@@ -547,7 +535,7 @@ elseif game.PlaceId == 116495829188952 then
                         Remotes.CreateParty:FireServer(PartyCreationState.partySettings())
                         partyCreated = true
                         stuckCheckStart = 0
-                        StatusLabel.Text = "LOBBY STATUS :\nĐã tạo party (Tối đa: " .. Config.Players_number .. " người)"
+                        StatusLabel.Text = "PARTY STATUS :\nParty created (Max: " .. Config.Players_number .. " players)"
                     end
                 end
 
@@ -580,5 +568,6 @@ elseif game.PlaceId == 116495829188952 then
         end)
     end
 else
-    print("Vui lòng vào đúng game Dead Rails (Game hoặc Lobby)!")
+    print("[Error] Please enter Dead Rails (Game or Lobby)!")
 end
+.
