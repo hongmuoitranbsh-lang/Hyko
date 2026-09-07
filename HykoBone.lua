@@ -1,6 +1,10 @@
 repeat task.wait() until game:IsLoaded()
 
-print("Hyko v1.3.5 - Auto Farm & Back to Lobby Loop")
+print("Hyko v1.3.5 - Auto Farm & Back to Lobby Loop (Universal Compatibility)")
+
+-- // Safe Compatibility Wrappers (Hỗ trợ đa Executor)
+local queue_teleport = (syn and syn.queue_on_teleport) or queue_on_teleport or (fluxus and fluxus.queue_on_teleport)
+local get_hui = gethui or function() return game:GetService("CoreGui") end
 
 -- // Configuration
 getgenv().Game_config = {
@@ -16,8 +20,10 @@ getgenv().Lobby_config = {
 
 local ScriptURL = "https://raw.githubusercontent.com/hongmuoitranbsh-lang/Hyko/refs/heads/main/HykoBone.lua"
 
-if queue_on_teleport then
-    queue_on_teleport("loadstring(game:HttpGet('" .. ScriptURL .. "'))()")
+if queue_teleport then
+    pcall(function()
+        queue_teleport("loadstring(game:HttpGet('" .. ScriptURL .. "'))()")
+    end)
 end
 
 local Prefix = getgenv().Game_config
@@ -42,12 +48,15 @@ if game.PlaceId == 70876832253163 then
     local comps = require(RS:WaitForChild("Shared"):WaitForChild("Universe"):WaitForChild("ECS"):WaitForChild("components"))
     local replicator = require(RS:WaitForChild("Client"):WaitForChild("Universe"):WaitForChild("Replication"):WaitForChild("clientReplicator"))
     local Remotes = require(RS:WaitForChild("Shared"):WaitForChild("Universe"):WaitForChild("Remotes"))
-    local Event = game:GetService("ReplicatedStorage"):WaitForChild("Shared"):WaitForChild("Universe"):WaitForChild("Network"):WaitForChild("RemoteEvent"):WaitForChild("Actionable")
+    local Event = RS:WaitForChild("Shared"):WaitForChild("Universe"):WaitForChild("Network"):WaitForChild("RemoteEvent"):WaitForChild("Actionable")
 
     local CollectedBond = 0
 
-    -- UI Modern Dark - No Image Background
-    local CoreGui = (gethui and gethui() or game:GetService("CoreGui"))
+    -- UI Modern Dark - Dynamic CoreGui / PlayerGui Target
+    local CoreGui = get_hui()
+    if not CoreGui or not pcall(function() return CoreGui.Name end) then
+        CoreGui = LP:WaitForChild("PlayerGui")
+    end
 
     if CoreGui:FindFirstChild("HykoUI") then
         CoreGui["HykoUI"]:Destroy()
@@ -85,7 +94,7 @@ if game.PlaceId == 70876832253163 then
     }
 
     task.spawn(function()
-        while task.wait(0.03) do
+        while task.wait(0.03) and ScreenGui.Parent do
             RainbowGradient.Rotation = (RainbowGradient.Rotation + 2) % 360
         end
     end)
@@ -204,10 +213,12 @@ if game.PlaceId == 70876832253163 then
         Position = UDim2.new(0.5, -180, 0.5, -105)
     }):Play()
 
-    local CurrentBond = LP:WaitForChild("PlayerGui"):WaitForChild("BondGui"):WaitForChild("BondInfo"):WaitForChild("BondCount")
-    CurrentBondLabel.Text = "INVENTORY : " .. tostring(CurrentBond.Text)
-    CurrentBond:GetPropertyChangedSignal("Text"):Connect(function()
+    pcall(function()
+        local CurrentBond = LP:WaitForChild("PlayerGui"):WaitForChild("BondGui"):WaitForChild("BondInfo"):WaitForChild("BondCount")
         CurrentBondLabel.Text = "INVENTORY : " .. tostring(CurrentBond.Text)
+        CurrentBond:GetPropertyChangedSignal("Text"):Connect(function()
+            CurrentBondLabel.Text = "INVENTORY : " .. tostring(CurrentBond.Text)
+        end)
     end)
 
     -- // Logic Farm & Out ra Lobby
@@ -276,7 +287,10 @@ elseif game.PlaceId == 116495829188952 then
     local stuckCheckStart = 0
     local waitingForReservation = false
 
-    local CoreGui = (gethui and gethui() or game:GetService("CoreGui"))
+    local CoreGui = get_hui()
+    if not CoreGui or not pcall(function() return CoreGui.Name end) then
+        CoreGui = LP:WaitForChild("PlayerGui")
+    end
 
     if CoreGui:FindFirstChild("HykoUILobby") then
         CoreGui["HykoUILobby"]:Destroy()
@@ -314,7 +328,7 @@ elseif game.PlaceId == 116495829188952 then
     }
 
     task.spawn(function()
-        while task.wait(0.03) do
+        while task.wait(0.03) and ScreenGui.Parent do
             RainbowGradient.Rotation = (RainbowGradient.Rotation + 2) % 360
         end
     end)
@@ -389,6 +403,8 @@ elseif game.PlaceId == 116495829188952 then
             if hrp and partyZones[1] and partyZones[1]:FindFirstChild("Hitbox") then
                 hrp.CFrame = partyZones[1].Hitbox.CFrame + Vector3.new(0, 3, 0)
             end
+
+            local reservedConnection, createdConnection, exitConnection, joinedConnection, expiredConnection
 
             reservedConnection = Remotes.PartyZoneReserved.OnClientEvent:Connect(function()
                 waitingForReservation = false
